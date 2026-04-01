@@ -1,0 +1,20 @@
+{
+  "name": "Cards",
+  "short_name": "Cards",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#317EFB",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192.png?text=Plot",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512.png?text=Plot",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
