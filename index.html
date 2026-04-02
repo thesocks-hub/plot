@@ -28,6 +28,8 @@ button,select,input,textarea{font-family:inherit}
 .btn:active{background:var(--bg)}
 .btn-primary{background:var(--text);color:#fff;border-color:var(--text)}
 .btn-primary:active{opacity:.8}
+.btn-danger{background:#e24b4a;color:#fff;border-color:#e24b4a}
+.btn-danger:active{opacity:.8}
 .tabs{display:flex;margin-bottom:12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg)}
 .tab{flex:1;padding:8px 0;text-align:center;font-size:13px;cursor:pointer;color:var(--text2);transition:all .12s;border:none;background:transparent}
 .tab.active{background:var(--surface);color:var(--text);font-weight:500}
@@ -81,7 +83,6 @@ button,select,input,textarea{font-family:inherit}
 .tag-memo .card-tag-badge{background:var(--memo-bg);color:var(--memo);border:1px solid var(--memo-border)}
 .tag-note{border-left:3px solid var(--note)}
 .tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
-
 .card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
 .card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
 .card-sketch-thumb{width:100%;border-radius:6px;border:0.5px solid var(--border);display:block;cursor:pointer;background:#fff;max-height:160px;object-fit:contain}
@@ -154,14 +155,33 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 .export-row button{flex:1;font-size:13px;padding:8px;min-width:80px}
 .tag-edit-select{font-size:11px;padding:2px 6px;border-radius:5px;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2)}
 .db-notice{font-size:11px;color:var(--text3);text-align:center;padding:2px 0 8px}
+
+/* ── Work management ── */
+.work-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.work-row{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:grab}
+.work-row:active{opacity:.8;cursor:grabbing}
+.work-row.drag-over-work{outline:2px solid var(--border2);outline-offset:-2px}
+.work-row-drag-handle{color:var(--text3);font-size:18px;line-height:1;flex-shrink:0;user-select:none}
+.work-row-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.work-name-input{width:100%;font-size:15px;font-weight:500;border:none;outline:none;background:transparent;color:var(--text);padding:0}
+.work-name-input:focus{background:var(--bg);border-radius:4px;padding:3px 6px}
+.work-row-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.work-row-meta label{font-size:12px;color:var(--text2)}
+.work-row-meta input[type=number]{width:56px;padding:3px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:5px;background:var(--bg)}
+.work-card-count{font-size:12px;color:var(--text3)}
+.work-row-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.work-row-btn{font-size:11px;padding:4px 10px;border:0.5px solid var(--border);border-radius:5px;background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap}
+.work-row-btn:active{background:var(--bg)}
+.work-row-btn.del{color:#e24b4a;border-color:#f5b8b8}
+.work-row-btn.del:active{background:#fef0f0}
+.work-row-btn.open{background:var(--text);color:#fff;border-color:var(--text)}
+.work-add-row{display:flex;gap:8px;align-items:center}
+.work-add-row input{flex:1;font-size:14px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--surface);color:var(--text)}
 </style>
 </head>
 <body>
 <div class="app" id="app"><div class="db-notice" id="db-notice">読み込み中…</div></div>
 <script>
-// ──────────────────────────────────────────────
-// CONSTANTS
-// ──────────────────────────────────────────────
 const SECTIONS=['OP','PP1','MP','PP2','ED','Note'];
 const TAG_LABELS={emotion:'感情',serif:'セリフ',action:'アクション',explain:'説明',memo:'メモ'};
 const TAG_COLORS={emotion:'#e24b4a',serif:'#185FA5',action:'#2a8a4a',explain:'#1a1916',memo:'#b07d10'};
@@ -169,9 +189,6 @@ const SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg
 const PEN_SIZES=[2,4,8];
 const PEN_PALETTE=['#e24b4a','#185FA5','#2a8a4a','#1a1916','#b07d10','#7b3fb5','#888888','#ffffff'];
 
-// ──────────────────────────────────────────────
-// STATE
-// ──────────────────────────────────────────────
 let state={
   works:[{id:1,name:'作品1',pageCount:16}],
   activeWork:1,activeSection:'OP',cards:[],nextId:1,
@@ -181,217 +198,160 @@ let state={
   editingCardId:null,editingText:'',editingTag:null,
   penColor:TAG_COLORS.emotion,penSize:PEN_SIZES[1],
   pageData:[],
+  // work management
+  newWorkNameMgr:'',
 };
 
-// ──────────────────────────────────────────────
-// IndexedDB
-// ──────────────────────────────────────────────
+// ── IndexedDB ──
 let db=null;
-
 function openDB(){
   return new Promise((res,rej)=>{
     const r=indexedDB.open('manga_plot_v4',1);
-    r.onupgradeneeded=e=>{
-      const d=e.target.result;
-      if(!d.objectStoreNames.contains('state'))d.createObjectStore('state');
-      if(!d.objectStoreNames.contains('sketches'))d.createObjectStore('sketches');
-    };
-    r.onsuccess=e=>res(e.target.result);
-    r.onerror=e=>rej(e.target.error);
+    r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('state'))d.createObjectStore('state');if(!d.objectStoreNames.contains('sketches'))d.createObjectStore('sketches');};
+    r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);
   });
 }
-function idbGet(store,key){
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(store,'readonly');
-    const r=tx.objectStore(store).get(key);
-    r.onsuccess=e=>res(e.target.result);
-    r.onerror=e=>rej(e.target.error);
-  });
-}
-function idbPut(store,key,val){
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(store,'readwrite');
-    const r=tx.objectStore(store).put(val,key);
-    r.onsuccess=()=>res();
-    r.onerror=e=>rej(e.target.error);
-  });
-}
-function idbDel(store,key){
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(store,'readwrite');
-    const r=tx.objectStore(store).delete(key);
-    r.onsuccess=()=>res();
-    r.onerror=e=>rej(e.target.error);
-  });
-}
+function idbGet(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readonly');const r=tx.objectStore(store).get(key);r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);});}
+function idbPut(store,key,val){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).put(val,key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
+function idbDel(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).delete(key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
 
 async function save(){
   if(!db)return;
-  const slim=state.cards.map(c=>{const {sketch,...rest}=c;return rest;});
-  await idbPut('state','main',{
-    works:state.works,activeWork:state.activeWork,
-    cards:slim,nextId:state.nextId,
-    tab:state.tab,pageData:state.pageData
-  });
+  const slim=state.cards.map(c=>{const{sketch,...rest}=c;return rest;});
+  await idbPut('state','main',{works:state.works,activeWork:state.activeWork,cards:slim,nextId:state.nextId,tab:state.tab,pageData:state.pageData});
 }
-
 async function saveSketchIDB(id,dataURL){if(db)await idbPut('sketches',id,dataURL);}
 async function delSketchIDB(id){if(db)await idbDel('sketches',id);}
-
 async function loadAll(){
   const saved=await idbGet('state','main');
   if(saved)state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null};
-  for(const c of state.cards){
-    try{const sk=await idbGet('sketches',c.id);if(sk)c.sketch=sk;}catch(e){}
-  }
+  for(const c of state.cards){try{const sk=await idbGet('sketches',c.id);if(sk)c.sketch=sk;}catch(e){}}
 }
 
-// ──────────────────────────────────────────────
-// HELPERS
-// ──────────────────────────────────────────────
+// ── Helpers ──
 const getWork=()=>state.works.find(w=>w.id===state.activeWork);
-function getPageData(n){
-  return state.pageData.find(p=>p.workId===state.activeWork&&p.pageNum===n)||{workId:state.activeWork,pageNum:n,section:''};
-}
+function getPageData(n){return state.pageData.find(p=>p.workId===state.activeWork&&p.pageNum===n)||{workId:state.activeWork,pageNum:n,section:''};}
 function setPageSection(n,sec){
   const i=state.pageData.findIndex(p=>p.workId===state.activeWork&&p.pageNum===n);
-  if(i>=0)state.pageData[i].section=sec;
-  else state.pageData.push({workId:state.activeWork,pageNum:n,section:sec});
+  if(i>=0)state.pageData[i].section=sec;else state.pageData.push({workId:state.activeWork,pageNum:n,section:sec});
   save();render();
 }
-function getCardsForPage(n){
-  return state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===n).sort((a,b)=>(a.op??0)-(b.op??0));
-}
-function getCardsForSection(sec){
-  return state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec).sort((a,b)=>(a.os??0)-(b.os??0));
-}
+function getCardsForPage(n){return state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===n).sort((a,b)=>(a.op??0)-(b.op??0));}
+function getCardsForSection(sec){return state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec).sort((a,b)=>(a.os??0)-(b.os??0));}
 
 function moveCard(id,toSec){
-  const cards=getCardsForSection(toSec);
-  const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
-  state.cards=state.cards.map(c=>c.id===id?{...c,section:toSec,os:maxOs}:c);
-  save();render();
+  const cards=getCardsForSection(toSec);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
+  state.cards=state.cards.map(c=>c.id===id?{...c,section:toSec,os:maxOs}:c);save();render();
 }
 function moveCardToPage(id,toPage){
-  const cards=getCardsForPage(parseInt(toPage));
-  const maxOp=cards.length?Math.max(...cards.map(c=>c.op??0))+1:0;
-  state.cards=state.cards.map(c=>c.id===id?{...c,pageNum:parseInt(toPage),op:maxOp}:c);
-  save();render();
+  const cards=getCardsForPage(parseInt(toPage));const maxOp=cards.length?Math.max(...cards.map(c=>c.op??0))+1:0;
+  state.cards=state.cards.map(c=>c.id===id?{...c,pageNum:parseInt(toPage),op:maxOp}:c);save();render();
 }
-function moveCardToWork(id,toWorkId){
-  state.cards=state.cards.map(c=>c.id===id?{...c,workId:parseInt(toWorkId)}:c);
-  save();render();
-}
-function deleteCard(id){
-  if(!confirm('削除しますか？'))return;
-  state.cards=state.cards.filter(c=>c.id!==id);
-  delSketchIDB(id);save();render();
-}
+function moveCardToWork(id,toWorkId){state.cards=state.cards.map(c=>c.id===id?{...c,workId:parseInt(toWorkId)}:c);save();render();}
+function deleteCard(id){if(!confirm('削除しますか？'))return;state.cards=state.cards.filter(c=>c.id!==id);delSketchIDB(id);save();render();}
 function addCard(){
   const text=state.newText.trim();if(!text)return;
-  const cards=getCardsForSection(state.activeSection);
-  const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
+  const cards=getCardsForSection(state.activeSection);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
   state.cards.push({id:state.nextId++,workId:state.activeWork,section:state.activeSection,tag:state.newTag,text,sketch:null,pageNum:0,os:maxOs,op:0});
   state.newText='';save();render();
 }
-function addWork(){
-  if(!state.newWorkName.trim())return;
+function updatePageCount(n){const w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
+
+// ── Work management ──
+function addWorkFromMgr(){
+  const name=state.newWorkNameMgr.trim();if(!name)return;
   const id=Date.now();
-  state.works.push({id,name:state.newWorkName.trim(),pageCount:16});
-  state.activeWork=id;state.showModal=false;save();render();
+  state.works.push({id,name,pageCount:16});
+  state.newWorkNameMgr='';save();render();
 }
-function updatePageCount(n){
-  const w=getWork();if(!w)return;
-  w.pageCount=Math.max(1,Math.min(200,n));save();render();
+function renameWork(id,name){
+  if(!name.trim())return;
+  state.works=state.works.map(w=>w.id===id?{...w,name:name.trim()}:w);save();
+}
+function setWorkPageCount(id,n){
+  state.works=state.works.map(w=>w.id===id?{...w,pageCount:Math.max(1,Math.min(200,n))}:w);save();
+}
+function deleteWork(id){
+  if(state.works.length<=1){alert('最後の1作品は削除できません');return;}
+  const cardCount=state.cards.filter(c=>c.workId===id).length;
+  if(!confirm(`「${state.works.find(w=>w.id===id)?.name}」を削除しますか？\nカード${cardCount}枚もすべて削除されます。`))return;
+  // delete sketches
+  state.cards.filter(c=>c.workId===id).forEach(c=>delSketchIDB(c.id));
+  state.cards=state.cards.filter(c=>c.workId!==id);
+  state.works=state.works.filter(w=>w.id!==id);
+  if(state.activeWork===id)state.activeWork=state.works[0].id;
+  save();render();
+}
+function openWork(id){
+  state.activeWork=id;state.tab='page';save();render();
 }
 
-// ──────────────────────────────────────────────
-// DRAG & DROP WITH REORDER
-// ──────────────────────────────────────────────
+// work drag-reorder
+let dragWorkId=null;
+function handleDragStartWork(id){dragWorkId=id;}
+function handleDropOnWork(e,targetId){
+  e.preventDefault();
+  document.querySelectorAll('.work-row').forEach(el=>el.classList.remove('drag-over-work'));
+  if(dragWorkId==null||dragWorkId===targetId)return;
+  const fi=state.works.findIndex(w=>w.id===dragWorkId);
+  const ti=state.works.findIndex(w=>w.id===targetId);
+  if(fi<0||ti<0)return;
+  state.works.splice(ti,0,state.works.splice(fi,1)[0]);
+  dragWorkId=null;save();render();
+}
+function moveWorkUp(id){
+  const i=state.works.findIndex(w=>w.id===id);if(i<=0)return;
+  [state.works[i-1],state.works[i]]=[state.works[i],state.works[i-1]];save();render();
+}
+function moveWorkDown(id){
+  const i=state.works.findIndex(w=>w.id===id);if(i<0||i>=state.works.length-1)return;
+  [state.works[i],state.works[i+1]]=[state.works[i+1],state.works[i]];save();render();
+}
+
+// ── Drag card ──
 let dragId=null,dragCtx=null,dragCtxVal=null;
-
 function reorderInList(fromId,targetId,getList,orderKey,extraUpdates){
-  let list=[...getList()];
-  const fi=list.findIndex(c=>c.id===fromId);
-  const ti=list.findIndex(c=>c.id===targetId);
+  let list=[...getList()];const fi=list.findIndex(c=>c.id===fromId);const ti=list.findIndex(c=>c.id===targetId);
   if(fi<0||ti<0)return false;
   list.splice(ti,0,list.splice(fi,1)[0]);
-  list.forEach((c,i)=>{
-    state.cards=state.cards.map(sc=>sc.id===c.id?{...sc,[orderKey]:i,...(extraUpdates||{})}:sc);
-  });
+  list.forEach((c,i)=>{state.cards=state.cards.map(sc=>sc.id===c.id?{...sc,[orderKey]:i,...(extraUpdates||{})}:sc);});
   return true;
 }
-
 function handleDragStartCard(id,ctx,ctxVal){dragId=id;dragCtx=ctx;dragCtxVal=ctxVal;}
-
 function handleDropOnCard(e,targetId,ctx,ctxVal){
   e.preventDefault();e.stopPropagation();
   document.querySelectorAll('.drag-over-card').forEach(el=>el.classList.remove('drag-over-card'));
   if(dragId==null||dragId===targetId)return;
-  if(ctx==='section'){
-    const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});
-    if(!ok){moveCard(dragId,ctxVal);}
-  } else {
-    const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});
-    if(!ok){moveCardToPage(dragId,ctxVal);}
-  }
+  if(ctx==='section'){const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
+  else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
   dragId=null;save();render();
 }
+function handleDropSection(e,sec){e.preventDefault();document.querySelectorAll('.cards-container').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCard(dragId,sec);dragId=null;}
+function handleDropPage(e,pn){e.preventDefault();document.querySelectorAll('.page-cards').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCardToPage(dragId,pn);dragId=null;}
 
-function handleDropSection(e,sec){
-  e.preventDefault();
-  document.querySelectorAll('.cards-container').forEach(el=>el.classList.remove('drag-over'));
-  if(dragId==null)return;
-  moveCard(dragId,sec);dragId=null;
-}
-function handleDropPage(e,pn){
-  e.preventDefault();
-  document.querySelectorAll('.page-cards').forEach(el=>el.classList.remove('drag-over'));
-  if(dragId==null)return;
-  moveCardToPage(dragId,pn);dragId=null;
-}
-
-// ──────────────────────────────────────────────
-// EDIT
-// ──────────────────────────────────────────────
-function startEdit(id){
-  const c=state.cards.find(c=>c.id===id);if(!c)return;
-  state.editingCardId=id;state.editingText=c.text;state.editingTag=c.tag;
-  render();
-  setTimeout(()=>{const ta=document.getElementById(`eta-${id}`);if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}},30);
-}
+// ── Edit ──
+function startEdit(id){const c=state.cards.find(c=>c.id===id);if(!c)return;state.editingCardId=id;state.editingText=c.text;state.editingTag=c.tag;render();setTimeout(()=>{const ta=document.getElementById(`eta-${id}`);if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}},30);}
 function handleEditKey(e,id){state.editingText=e.target.value;if(e.key==='Escape')cancelEdit();}
 function setEditTag(tag){state.editingTag=tag;render();}
 function saveEdit(id){
   const text=document.getElementById(`eta-${id}`)?.value??state.editingText;
   const tag=state.editingTag||state.cards.find(c=>c.id===id)?.tag;
   state.cards=state.cards.map(c=>c.id===id?{...c,text,tag}:c);
-  state.editingCardId=null;state.editingText='';state.editingTag=null;
-  save();render();
+  state.editingCardId=null;state.editingText='';state.editingTag=null;save();render();
 }
 function cancelEdit(){state.editingCardId=null;state.editingText='';state.editingTag=null;render();}
 
-// ──────────────────────────────────────────────
-// SKETCH
-// ──────────────────────────────────────────────
+// ── Sketch ──
 let skCanvas=null,skCtx=null,skOff=null,skOffCtx=null,drawing=false;
-
 function initCanvas(){
   skCanvas=document.getElementById('sketch-canvas');if(!skCanvas)return;
   const W=skCanvas.parentElement.clientWidth||460;
-  skCanvas.width=W;skCanvas.height=Math.round(W*0.55);
-  skCanvas.style.height=skCanvas.height+'px';
+  skCanvas.width=W;skCanvas.height=Math.round(W*0.55);skCanvas.style.height=skCanvas.height+'px';
   skCtx=skCanvas.getContext('2d');
-  skOff=document.createElement('canvas');
-  skOff.width=skCanvas.width;skOff.height=skCanvas.height;
-  skOffCtx=skOff.getContext('2d');
-  skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);
+  skOff=document.createElement('canvas');skOff.width=skCanvas.width;skOff.height=skCanvas.height;
+  skOffCtx=skOff.getContext('2d');skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);
   skOffCtx.lineCap='round';skOffCtx.lineJoin='round';
-  if(state.sketchModal?.cardId!=null){
-    const c=state.cards.find(c=>c.id===state.sketchModal.cardId);
-    if(c?.sketch){const img=new Image();img.onload=()=>{skOffCtx.drawImage(img,0,0,skOff.width,skOff.height);flush();};img.src=c.sketch;}
-    else flush();
-  } else flush();
+  if(state.sketchModal?.cardId!=null){const c=state.cards.find(c=>c.id===state.sketchModal.cardId);if(c?.sketch){const img=new Image();img.onload=()=>{skOffCtx.drawImage(img,0,0,skOff.width,skOff.height);flush();};img.src=c.sketch;}else flush();}else flush();
   attachPen();
 }
 function flush(){if(!skCtx||!skOff)return;skCtx.clearRect(0,0,skCanvas.width,skCanvas.height);skCtx.drawImage(skOff,0,0);}
@@ -401,12 +361,10 @@ function attachPen(){
   let last=null;
   skCanvas.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.width>30)return;e.preventDefault();drawing=true;last=getPos(e);skOffCtx.beginPath();skOffCtx.moveTo(last.x,last.y);},{passive:false});
   skCanvas.addEventListener('pointermove',e=>{
-    if(!drawing||( e.pointerType==='touch'&&e.width>30))return;e.preventDefault();
+    if(!drawing||(e.pointerType==='touch'&&e.width>30))return;e.preventDefault();
     const p=getPos(e),pr=Math.max(0.1,e.pressure||0.5);
-    skOffCtx.lineWidth=state.penSize*pr*1.5+state.penSize*0.5;
-    skOffCtx.strokeStyle=state.penColor;
-    skOffCtx.lineTo(p.x,p.y);skOffCtx.stroke();
-    skOffCtx.beginPath();skOffCtx.moveTo(p.x,p.y);
+    skOffCtx.lineWidth=state.penSize*pr*1.5+state.penSize*0.5;skOffCtx.strokeStyle=state.penColor;
+    skOffCtx.lineTo(p.x,p.y);skOffCtx.stroke();skOffCtx.beginPath();skOffCtx.moveTo(p.x,p.y);
     last=p;flush();
   },{passive:false});
   const stop=()=>{drawing=false;last=null;if(skOffCtx)skOffCtx.beginPath();};
@@ -417,23 +375,17 @@ async function saveSketch(cardId){
   if(!skOff)return;
   const dataURL=skOff.toDataURL('image/jpeg',0.75);
   if(cardId==null){
-    const cards=getCardsForSection(state.activeSection);
-    const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
+    const cards=getCardsForSection(state.activeSection);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
     const nc={id:state.nextId++,workId:state.activeWork,section:state.activeSection,tag:state.newTag,text:'',sketch:dataURL,pageNum:0,os:maxOs,op:0};
     state.cards.push(nc);await saveSketchIDB(nc.id,dataURL);
-  } else {
-    state.cards=state.cards.map(c=>c.id===cardId?{...c,sketch:dataURL}:c);
-    await saveSketchIDB(cardId,dataURL);
-  }
+  }else{state.cards=state.cards.map(c=>c.id===cardId?{...c,sketch:dataURL}:c);await saveSketchIDB(cardId,dataURL);}
   save();state.sketchModal=null;render();
 }
 async function removeSketch(id){state.cards=state.cards.map(c=>c.id===id?{...c,sketch:null}:c);await delSketchIDB(id);save();render();}
 function openSketch(cardId){state.sketchModal={cardId};render();}
 function openSketchNew(){state.sketchModal={cardId:null};render();}
 
-// ──────────────────────────────────────────────
-// EXPORT / BACKUP
-// ──────────────────────────────────────────────
+// ── Export / Backup ──
 function exportText(){
   const w=getWork();let out=`【${w?.name||'作品'}】\n\n`;
   for(const sec of SECTIONS){const cards=getCardsForSection(sec);if(!cards.length)continue;out+=`■ ${sec}\n`;for(const c of cards)out+=`[${TAG_LABELS[c.tag]}]${c.text?' '+c.text:''}${c.sketch?' [図あり]':''}\n`;out+='\n';}
@@ -456,13 +408,10 @@ function importBackup(){
   };inp.click();
 }
 
-// ──────────────────────────────────────────────
-// RENDER HELPERS
-// ──────────────────────────────────────────────
+// ── Render helpers ──
 function tagSelectEdit(currentTag){
   return `<select class="tag-edit-select" onchange="setEditTag(this.value)">${Object.entries(TAG_LABELS).map(([k,v])=>`<option value="${k}"${k===currentTag?' selected':''}>${v}</option>`).join('')}</select>`;
 }
-
 function cardFooterHTML(c,secMoveOpts){
   const workOpts=state.works.filter(w=>w.id!==c.workId).map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
   return `<div class="card-footer">
@@ -479,10 +428,8 @@ function cardFooterHTML(c,secMoveOpts){
     </div>
   </div>`;
 }
-
 function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
-  const editing=state.editingCardId===c.id;
-  const tag=editing?(state.editingTag||c.tag):c.tag;
+  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
   return `<div class="card tag-${tag}" id="card-${c.id}"
     draggable="${!editing}"
     ondragstart="handleDragStartCard(${c.id},'${ctx}','${ctxVal}')"
@@ -503,17 +450,13 @@ function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
     }
   </div>`;
 }
-
 function compactCardHTML(c,pageMoveOpts,pn){
-  const editing=state.editingCardId===c.id;
-  const tag=editing?(state.editingTag||c.tag):c.tag;
-  if(editing){
-    return `<div class="card tag-${tag}" id="card-${c.id}" style="font-size:13px">
-      <div class="card-top"><span class="card-tag-badge">${TAG_LABELS[tag]}</span>${tagSelectEdit(tag)}</div>
-      <textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
-      <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>
-    </div>`;
-  }
+  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
+  if(editing){return `<div class="card tag-${tag}" id="card-${c.id}" style="font-size:13px">
+    <div class="card-top"><span class="card-tag-badge">${TAG_LABELS[tag]}</span>${tagSelectEdit(tag)}</div>
+    <textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
+    <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>
+  </div>`;}
   return `<div class="card-compact tag-${tag}" id="card-${c.id}"
     draggable="true"
     ondragstart="handleDragStartCard(${c.id},'page',${pn})"
@@ -535,9 +478,52 @@ function compactCardHTML(c,pageMoveOpts,pn){
   </div>`;
 }
 
-// ──────────────────────────────────────────────
-// RENDER
-// ──────────────────────────────────────────────
+// ── Work management screen ──
+function workManagementHTML(){
+  const rows=state.works.map((w,i)=>{
+    const cardCount=state.cards.filter(c=>c.workId===w.id).length;
+    const isActive=w.id===state.activeWork;
+    return `<div class="work-row${isActive?' ':''}${isActive?'':''}" id="wrow-${w.id}"
+      draggable="true"
+      ondragstart="handleDragStartWork(${w.id})"
+      ondragover="event.preventDefault();document.getElementById('wrow-${w.id}').classList.add('drag-over-work')"
+      ondragleave="document.getElementById('wrow-${w.id}').classList.remove('drag-over-work')"
+      ondrop="handleDropOnWork(event,${w.id})"
+      style="${isActive?'border-color:var(--border2);box-shadow:inset 3px 0 0 var(--text)':''}">
+      <span class="work-row-drag-handle">⠿</span>
+      <div class="work-row-body">
+        <input class="work-name-input" type="text" value="${w.name.replace(/"/g,'&quot;')}"
+          onchange="renameWork(${w.id},this.value)"
+          onblur="renameWork(${w.id},this.value);save()">
+        <div class="work-row-meta">
+          <label>ページ数</label>
+          <input type="number" min="1" max="200" value="${w.pageCount}"
+            onchange="setWorkPageCount(${w.id},parseInt(this.value)||1);save()">
+          <span class="work-card-count">カード ${cardCount}枚</span>
+        </div>
+      </div>
+      <div class="work-row-btns">
+        <button class="work-row-btn open" onclick="openWork(${w.id})">開く</button>
+        <div style="display:flex;gap:4px">
+          <button class="work-row-btn" onclick="moveWorkUp(${w.id})" ${i===0?'disabled style="opacity:.3"':''}>↑</button>
+          <button class="work-row-btn" onclick="moveWorkDown(${w.id})" ${i===state.works.length-1?'disabled style="opacity:.3"':''}>↓</button>
+        </div>
+        <button class="work-row-btn del" onclick="deleteWork(${w.id})">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="work-list">${rows}</div>
+    <div class="work-add-row">
+      <input type="text" placeholder="新しい作品名…" value="${state.newWorkNameMgr.replace(/"/g,'&quot;')}"
+        id="wmgr-input"
+        oninput="state.newWorkNameMgr=this.value"
+        onkeydown="if(event.key==='Enter')addWorkFromMgr()">
+      <button class="btn btn-primary" onclick="addWorkFromMgr()">追加</button>
+    </div>`;
+}
+
+// ── Render ──
 function render(){
   const app=document.getElementById('app');
   const work=getWork();
@@ -547,16 +533,7 @@ function render(){
 
   // Section board
   const sectionBoardHTML=SECTIONS.map(sec=>{
-    const cards=getCardsForSection(sec);
-    const collapsed=state.collapsedSections[sec];
-    const secOpts=SECTIONS.filter(s=>s!==sec);
-    const inner=collapsed?'':`<div class="cards-container" id="dsc-${sec}"
-      ondragover="event.preventDefault();document.getElementById('dsc-${sec}').classList.add('drag-over')"
-      ondragleave="document.getElementById('dsc-${sec}').classList.remove('drag-over')"
-      ondrop="handleDropSection(event,'${sec}')">
-      ${cards.length?cards.map(c=>fullCardHTML(c,secOpts,'section','${sec}')).join(''):'<div class="empty-msg">カードなし</div>'}
-    </div>`;
-    // Fix: escape sec in template
+    const cards=getCardsForSection(sec);const collapsed=state.collapsedSections[sec];const secOpts=SECTIONS.filter(s=>s!==sec);
     const innerFixed=collapsed?'':`<div class="cards-container" id="dsc-${sec}"
       ondragover="event.preventDefault();document.getElementById('dsc-${sec}').classList.add('drag-over')"
       ondragleave="document.getElementById('dsc-${sec}').classList.remove('drag-over')"
@@ -565,28 +542,21 @@ function render(){
     </div>`;
     return `<div class="section-block">
       <div class="section-header sec-${sec.toLowerCase()}" onclick="state.collapsedSections['${sec}']=!state.collapsedSections['${sec}'];render()">
-        <span class="sec-title">${sec}</span>
-        <span class="sec-count">${cards.length}枚 ${collapsed?'▶':'▼'}</span>
+        <span class="sec-title">${sec}</span><span class="sec-count">${cards.length}枚 ${collapsed?'▶':'▼'}</span>
       </div>${innerFixed}
     </div>`;
   }).join('');
 
   // Page spread
-  // 右とじ: 奇数ページ=左側, 偶数ページ=右側
-  // 最初の見開き: [p1左, 未定右] → [p2右,p3左] → [p4右,p5左] ...
   const pc=work?work.pageCount:16;
-  const spreads=[['tbd',1]]; // 'tbd'=未定枠
+  const spreads=[['tbd',1]];
   for(let i=2;i<=pc;i+=2)spreads.push([i,i+1<=pc?i+1:null]);
-
-  // 未定カード（pageNum===0）
   const tbdCards=state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===0).sort((a,b)=>(a.op??0)-(b.op??0));
 
   function tbdColHTML(){
     const moveOpts=Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}">${n}p</option>`).join('');
     return `<div class="page-col">
-      <div class="page-col-header" style="background:var(--bg)">
-        <span class="page-num" style="color:var(--text2)">未定</span>
-      </div>
+      <div class="page-col-header" style="background:var(--bg)"><span class="page-num" style="color:var(--text2)">未定</span></div>
       <div class="page-cards" id="dp-0"
         ondragover="event.preventDefault();document.getElementById('dp-0').classList.add('drag-over')"
         ondragleave="document.getElementById('dp-0').classList.remove('drag-over')"
@@ -595,13 +565,10 @@ function render(){
       </div>
     </div>`;
   }
-
   function pageColHTML(pn){
     if(!pn)return`<div class="page-col" style="flex:1;min-width:0"><div class="page-col-header"><span class="page-num" style="color:var(--text3)">—</span></div></div>`;
-    const pd=getPageData(pn);
-    const bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
+    const pd=getPageData(pn);const bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
     const cards=getCardsForPage(pn);
-    // 移動先に「未定」も追加
     const moveOpts=`<option value="0">未定</option>`+Array.from({length:pc},(_,i)=>i+1).filter(n=>n!==pn).map(n=>`<option value="${n}">${n}p</option>`).join('');
     return `<div class="page-col">
       <div class="page-col-header ${bg}">
@@ -619,16 +586,13 @@ function render(){
       </div>
     </div>`;
   }
-
   const spreadHTML=spreads.map(([rp,lp])=>{
     const label=rp==='tbd'?`${lp}ページ / 未定`:rp&&lp?`見開き ${lp}・${rp}ページ`:rp?`${rp}ページ`:`${lp}ページ`;
-    const rightCol=rp==='tbd'?tbdColHTML():pageColHTML(rp);
     return `<div class="spread">
       <div class="spread-label">${label}</div>
-      <div class="spread-pages">${pageColHTML(lp)}${rightCol}</div>
+      <div class="spread-pages">${pageColHTML(lp)}${rp==='tbd'?tbdColHTML():pageColHTML(rp)}</div>
     </div>`;
   }).join('');
-
   const pageViewHTML=`
     <div class="page-controls">
       <label>総ページ数</label>
@@ -640,12 +604,10 @@ function render(){
   // Sketch modal
   const penSizeBtns=PEN_SIZES.map((s,i)=>`<button class="pen-size-btn${state.penSize===s?' active':''}" onclick="state.penSize=${s};document.querySelectorAll('.pen-size-btn').forEach((b,j)=>b.classList.toggle('active',j===${i}))"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="${1+i*1.5}" fill="currentColor"/></svg></button>`).join('');
   const colorBtns=PEN_PALETTE.map(c=>`<button class="color-btn${state.penColor===c?' active':''}${c==='#ffffff'?' white-swatch':''}" style="background:${c}" onclick="state.penColor='${c}';document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')"></button>`).join('');
-
   const sketchModalHTML=state.sketchModal?`<div class="modal-bg" onclick="if(event.target===this){state.sketchModal=null;render()}">
     <div class="sketch-modal" onclick="event.stopPropagation()">
       <div class="sketch-toolbar">
-        <label>太さ</label>${penSizeBtns}
-        <label>色</label>${colorBtns}
+        <label>太さ</label>${penSizeBtns}<label>色</label>${colorBtns}
         <button class="card-btn" onclick="clearSketch()">全消去</button>
       </div>
       <canvas id="sketch-canvas"></canvas>
@@ -657,21 +619,20 @@ function render(){
   </div>`:'';
 
   const workModalHTML=state.showModal?`<div class="modal-bg" onclick="if(event.target===this){state.showModal=false;render()}">
-    <div class="modal">
-      <h3>新しい作品</h3>
+    <div class="modal"><h3>新しい作品</h3>
       <input id="wni" type="text" placeholder="作品名" oninput="state.newWorkName=this.value" onkeydown="if(event.key==='Enter')addWork()">
-      <div class="modal-btns">
-        <button onclick="state.showModal=false;render()">キャンセル</button>
-        <button class="btn-primary" onclick="addWork()">追加</button>
-      </div>
+      <div class="modal-btns"><button onclick="state.showModal=false;render()">キャンセル</button><button class="btn-primary" onclick="addWork()">追加</button></div>
     </div>
   </div>`:'';
+
+  // カード追加エリアは作品管理タブでは非表示
+  const isWorkMgr=state.tab==='works';
 
   app.innerHTML=`
     <div class="top-bar">
       <select class="work-select" onchange="state.activeWork=parseInt(this.value);save();render()">${workOpts}</select>
-      <button class="btn" onclick="state.showModal=true;state.newWorkName='';render()">+作品</button>
     </div>
+    ${!isWorkMgr?`
     <div class="quick-add">
       <textarea id="card-input" rows="3" placeholder="アイデアをメモ…" oninput="state.newText=this.value">${state.newText.replace(/</g,'&lt;')}</textarea>
       <div class="quick-footer">
@@ -682,41 +643,36 @@ function render(){
     </div>
     <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
       <span style="font-size:12px;color:var(--text2)">追加先</span>${secBtns}
-    </div>
+    </div>`:''}
     <div class="tabs">
       <button class="tab${state.tab==='page'?' active':''}" onclick="state.tab='page';render()">ページ見開き</button>
       <button class="tab${state.tab==='section'?' active':''}" onclick="state.tab='section';render()">セクション一覧</button>
+      <button class="tab${state.tab==='works'?' active':''}" onclick="state.tab='works';render()">作品管理</button>
     </div>
-    ${state.tab==='page'?pageViewHTML:sectionBoardHTML}
-    <div class="export-row">
+    ${state.tab==='page'?pageViewHTML:state.tab==='section'?sectionBoardHTML:workManagementHTML()}
+    ${!isWorkMgr?`<div class="export-row">
       <button class="btn" onclick="exportText()">テキスト書き出し</button>
       <button class="btn" onclick="exportBackup()">書き出し</button>
       <button class="btn" onclick="importBackup()">読み込み</button>
-    </div>
+    </div>`:''}
     ${sketchModalHTML}${workModalHTML}
   `;
 
   if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
-  if(!state.sketchModal&&!state.showModal&&state.editingCardId==null){
+  if(!state.sketchModal&&!state.showModal&&state.editingCardId==null&&!isWorkMgr){
     const inp=document.getElementById('card-input');
     if(inp&&state.newText==='')setTimeout(()=>inp.focus(),40);
   }
-  const wni=document.getElementById('wni');if(wni)setTimeout(()=>wni.focus(),40);
 }
 
-// ──────────────────────────────────────────────
-// INIT
-// ──────────────────────────────────────────────
+// ── Init ──
 (async()=>{
   try{
-    db=await openDB();
-    await loadAll();
-    const notice=document.getElementById('db-notice');
-    if(notice)notice.remove();
+    db=await openDB();await loadAll();
+    const notice=document.getElementById('db-notice');if(notice)notice.remove();
   }catch(e){
     console.error('DB error',e);
-    const notice=document.getElementById('db-notice');
-    if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
+    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
   }
   render();
 })();
