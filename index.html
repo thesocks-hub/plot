@@ -659,10 +659,6 @@ function render(){
   `;
 
   if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
-  if(!state.sketchModal&&!state.showModal&&state.editingCardId==null&&!isWorkMgr){
-    const inp=document.getElementById('card-input');
-    if(inp&&state.newText==='')setTimeout(()=>inp.focus(),40);
-  }
 }
 
 // ── Init ──
