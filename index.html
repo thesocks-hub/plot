@@ -95,6 +95,10 @@ button,select,input,textarea{font-family:inherit}
 .tag-note{border-left:3px solid var(--note)}
 .tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
 .card-page-badge{font-size:10px;padding:2px 6px;border:0.5px solid var(--border);border-radius:10px;color:var(--text3)}
+.card-page-select{font-size:11px;padding:2px 5px;border:0.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text2);cursor:pointer}
+.sec-logline-row{padding:4px 12px 6px;background:var(--surface);border-bottom:0.5px solid var(--border)}
+.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0}
+.sec-logline::placeholder{color:var(--text3)}
 .card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
 .card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
 .card-sketch-thumb{width:100%;border-radius:6px;border:0.5px solid var(--border);display:block;cursor:pointer;background:#fff;max-height:160px;object-fit:contain}
@@ -366,8 +370,11 @@ function handleDropOnCard(e,targetId,ctx,ctxVal){
   e.preventDefault();e.stopPropagation();
   document.querySelectorAll('.drag-over-card').forEach(el=>el.classList.remove('drag-over-card'));
   if(dragId==null||dragId===targetId)return;
-  if(ctx==='section'){const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
-  else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
+  if(ctx==='section'){
+    // ページ順モードのときはカード間ドラッグ並び替えを無効（ページ移動は↕セレクトで）
+    if(getSortMode(ctxVal)==='page'){moveCard(dragId,ctxVal);}
+    else{const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
+  }else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
   dragId=null;save();render();
 }
 function handleDropSection(e,sec){e.preventDefault();document.querySelectorAll('.cards-container').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCard(dragId,sec);dragId=null;}
@@ -494,7 +501,9 @@ function cardFooterHTML(c,secMoveOpts){
 }
 function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
   const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
-  const pageLabel=c.pageNum>0?`${c.pageNum}p`:'未定';
+  const work=getWork();const pc=work?work.pageCount:16;
+  const pageSelectOpts=`<option value="0"${c.pageNum===0?' selected':''}>未定</option>`
+    +Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}"${c.pageNum===n?' selected':''}>${n}p</option>`).join('');
   return `<div class="card tag-${tag}" id="card-${c.id}"
     draggable="${!editing}"
     ondragstart="handleDragStartCard(${c.id},'${ctx}','${ctxVal}')"
@@ -503,7 +512,7 @@ function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
     ondrop="handleDropOnCard(event,${c.id},'${ctx}','${ctxVal}')">
     <div class="card-top">
       <span class="card-tag-badge">${TAG_LABELS[tag]}</span>
-      <span class="card-page-badge">${pageLabel}</span>
+      <select class="card-page-select" onclick="event.stopPropagation()" onchange="moveCardToPage(${c.id},this.value)">${pageSelectOpts}</select>
       ${editing?tagSelectEdit(tag):''}
     </div>
     ${editing
@@ -618,10 +627,11 @@ function render(){
         <span class="sec-title">${sec}</span>
         <span class="sec-count">${cards.length}枚</span>
         <span class="sec-chevron">${collapsed?'▶':'▼'}</span>
-        ${!collapsed?`<textarea class="sec-logline" rows="1" placeholder="このセクションのログライン…"
-          onclick="event.stopPropagation()"
+      </div>
+      <div class="sec-logline-row" onclick="event.stopPropagation()">
+        <textarea class="sec-logline" rows="1" placeholder="このセクションのログライン…"
           onblur="setSecLogline('${sec}',this.value)"
-        >${ll.replace(/</g,'&lt;')}</textarea>`:''}
+        >${ll.replace(/</g,'&lt;')}</textarea>
       </div>
       ${controls}${inner}
     </div>`;
