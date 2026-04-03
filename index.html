@@ -57,9 +57,8 @@ button,select,input,textarea{font-family:inherit}
 
 /* Section board */
 .section-block{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px}
-.section-header{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;flex-wrap:wrap}
-.section-header.sec-op{background:var(--sec-op)}
-.section-header.sec-pp1{background:var(--sec-pp1)}
+.section-header{display:flex;align-items:center;gap:6px;padding:8px 12px;cursor:pointer;flex-wrap:wrap}
+.section-header.sec-op{background:var(--sec-op)}.section-header.sec-pp1{background:var(--sec-pp1)}
 .section-header.sec-mp{background:var(--sec-mp)}
 .section-header.sec-pp2{background:var(--sec-pp2)}
 .section-header.sec-ed{background:var(--sec-ed)}
@@ -97,7 +96,7 @@ button,select,input,textarea{font-family:inherit}
 .card-page-badge{font-size:10px;padding:2px 6px;border:0.5px solid var(--border);border-radius:10px;color:var(--text3)}
 .card-page-select{font-size:11px;padding:2px 5px;border:0.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text2);cursor:pointer}
 .sec-logline-row{padding:4px 12px 6px;background:var(--surface);border-bottom:0.5px solid var(--border)}
-.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0}
+.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0;flex-basis:100%}
 .sec-logline::placeholder{color:var(--text3)}
 .card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
 .card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
@@ -609,13 +608,7 @@ function render(){
     const cards=getCardsForSection(sec);
     const collapsed=state.collapsedSections[sec];
     const secOpts=SECTIONS.filter(s=>s!==sec);
-    const sortMode=getSortMode(sec);
     const ll=getSecLogline(sec);
-    const controls=collapsed?'':`<div class="sec-controls" onclick="event.stopPropagation()">
-      <label style="font-size:12px;color:var(--text2)">ページ順</label>
-      <button class="sec-sort-btn${sortMode==='page'?' active':''}" onclick="setSortMode('${sec}','page')">ページ順</button>
-      <button class="sec-sort-btn${sortMode==='manual'?' active':''}" onclick="setSortMode('${sec}','manual')">手動</button>
-    </div>`;
     const inner=collapsed?'':`<div class="cards-container" id="dsc-${sec}"
       ondragover="event.preventDefault();document.getElementById('dsc-${sec}').classList.add('drag-over')"
       ondragleave="document.getElementById('dsc-${sec}').classList.remove('drag-over')"
@@ -627,13 +620,12 @@ function render(){
         <span class="sec-title">${sec}</span>
         <span class="sec-count">${cards.length}枚</span>
         <span class="sec-chevron">${collapsed?'▶':'▼'}</span>
-      </div>
-      <div class="sec-logline-row" onclick="event.stopPropagation()">
-        <textarea class="sec-logline" rows="1" placeholder="このセクションのログライン…"
+        <textarea class="sec-logline" rows="1" placeholder="ログライン…"
+          onclick="event.stopPropagation()"
           onblur="setSecLogline('${sec}',this.value)"
         >${ll.replace(/</g,'&lt;')}</textarea>
       </div>
-      ${controls}${inner}
+      ${inner}
     </div>`;
   }).join('');
 
