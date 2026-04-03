@@ -234,6 +234,649 @@ function getPageData(n){return state.pageData.find(p=>p.workId===state.activeWor
 function setPageSection(n,sec){
   const i=state.pageData.findIndex(p=>p.workId===state.activeWork&&p.pageNum===n);
   if(i>=0)state.pageData[i].section=sec;else state.pageData.push({workId:state.activeWork,pageNum:n,section:sec});
+  // そのページのカードのセクションも一括更新
+  const newSec=sec||'Note';
+  state.cards=state.cards.map(c=>(c.workId===state.activeWork&&c.pageNum===n)?{...c,section:newSec}:c);
+  save();render();
+}
+function getCardsForPage(n){return state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===n).sort((a,b)=>(a.op??0)-(b.op??0));}
+function getCardsForSection(sec){return state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec).sort((a,b)=>(a.os??0)-(b.os??0));}
+
+function moveCard(id,toSec){
+  const cards=getCardsForSection(toSec);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
+  state.cards=state.cards.map(c=>c.id===id?{...c,section:toSec,os:maxOs}:c);save();render();
+}
+function moveCardToPage(id,toPage){
+  toPage=parseInt(toPage);
+  const cards=getCardsForPage(toPage);const maxOp=cards.length?Math.max(...cards.map(c=>c.op??0))+1:0;
+  const sec=toPage===0?'Note':(getPageData(toPage).section||'Note');
+  const noteCards=getCardsForSection(sec);const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
+  state.cards=state.cards.map(c=>c.id===id?{...c,pageNum:toPage,op:maxOp,section:sec,os:maxOs}:c);save();render();
+}
+function moveCardToWork(id,toWorkId){state.cards=state.cards.map(c=>c.id===id?{...c,workId:parseInt(toWorkId)}:c);save();render();}
+function deleteCard(id){if(!confirm('削除しますか？'))return;state.cards=state.cards.filter(c=>c.id!==id);delSketchIDB(id);save();render();}
+function addCard(){
+  const text=state.newText.trim();if(!text)return;
+  const noteCards=getCardsForSection('Note');const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
+  state.cards.push({id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text,sketch:null,pageNum:0,os:maxOs,op:0});
+  state.newText='';save();render();
+}
+function updatePageCount(n){const w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
+
+// ── Work management ──
+function addWorkFromMgr(){
+  const name=state.newWorkNameMgr.trim();if(!name)return;
+  const id=Date.now();
+  state.works.push({id,name,pageCount:16});
+  state.newWorkNameMgr='';save();render();
+}
+function renameWork(id,name){
+  if(!name.trim())return;
+  state.works=state.works.map(w=>w.id===id?{...w,name:name.trim()}:w);save();
+}
+function setWorkPageCount(id,n){
+  state.works=state.works.map(w=>w.id===id?{...w,pageCount:Math.max(1,Math.min(200,n))}:w);save();
+}
+function deleteWork(id){
+  if(state.works.length<=1){alert('最後の1作品は削除できません');return;}
+  const cardCount=state.cards.filter(c=>c.workId===id).length;
+  if(!confirm(`「${state.works.find(w=>w.id===id)?.name}」を削除しますか？\nカード${cardCount}枚もすべて削除されます。`))return;
+  // delete sketches
+  state.cards.filter(c=>c.workId===id).forEach(c=>delSketchIDB(c.id));
+  state.cards=state.cards.filter(c=>c.workId!==id);
+  state.works=state.works.filter(w=>w.id!==id);
+  if(state.activeWork===id)state.activeWork=state.works[0].id;
+  save();render();
+}
+function openWork(id){
+  state.activeWork=id;state.tab='page';save();render();
+}
+
+// work drag-reorder
+let dragWorkId=null;
+function handleDragStartWork(id){dragWorkId=id;}
+function handleDropOnWork(e,targetId){
+  e.preventDefault();
+  document.querySelectorAll('.work-row').forEach(el=>el.classList.remove('drag-over-work'));
+  if(dragWorkId==null||dragWorkId===targetId)return;
+  const fi=state.works.findIndex(w=>w.id===dragWorkId);
+  const ti=state.works.findIndex(w=>w.id===targetId);
+  if(fi<0||ti<0)return;
+  state.works.splice(ti,0,state.works.splice(fi,1)[0]);
+  dragWorkId=null;save();render();
+}
+function moveWorkUp(id){
+  const i=state.works.findIndex(w=>w.id===id);if(i<=0)return;
+  [state.works[i-1],state.works[i]]=[state.works[i],state.works[i-1]];save();render();
+}
+function moveWorkDown(id){
+  const i=state.works.findIndex(w=>w.id===id);if(i<0||i>=state.works.length-1)return;
+  [state.works[i],state.works[i+1]]=[state.works[i+1],state.works[i]];save();render();
+}
+
+// ── Drag card ──
+let dragId=null,dragCtx=null,dragCtxVal=null;
+function reorderInList(fromId,targetId,getList,orderKey,extraUpdates){
+  let list=[...getList()];const fi=list.findIndex(c=>c.id===fromId);const ti=list.findIndex(c=>c.id===targetId);
+  if(fi<0||ti<0)return false;
+  list.splice(ti,0,list.splice(fi,1)[0]);
+  list.forEach((c,i)=>{state.cards=state.cards.map(sc=>sc.id===c.id?{...sc,[orderKey]:i,...(extraUpdates||{})}:sc);});
+  return true;
+}
+function handleDragStartCard(id,ctx,ctxVal){dragId=id;dragCtx=ctx;dragCtxVal=ctxVal;}
+function handleDropOnCard(e,targetId,ctx,ctxVal){
+  e.preventDefault();e.stopPropagation();
+  document.querySelectorAll('.drag-over-card').forEach(el=>el.classList.remove('drag-over-card'));
+  if(dragId==null||dragId===targetId)return;
+  if(ctx==='section'){const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
+  else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
+  dragId=null;save();render();
+}
+function handleDropSection(e,sec){e.preventDefault();document.querySelectorAll('.cards-container').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCard(dragId,sec);dragId=null;}
+function handleDropPage(e,pn){e.preventDefault();document.querySelectorAll('.page-cards').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCardToPage(dragId,pn);dragId=null;}
+
+// ── Edit ──
+function startEdit(id){const c=state.cards.find(c=>c.id===id);if(!c)return;state.editingCardId=id;state.editingText=c.text;state.editingTag=c.tag;render();setTimeout(()=>{const ta=document.getElementById(`eta-${id}`);if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}},30);}
+function handleEditKey(e,id){state.editingText=e.target.value;if(e.key==='Escape')cancelEdit();}
+function setEditTag(tag){state.editingTag=tag;render();}
+function saveEdit(id){
+  const text=document.getElementById(`eta-${id}`)?.value??state.editingText;
+  const tag=state.editingTag||state.cards.find(c=>c.id===id)?.tag;
+  state.cards=state.cards.map(c=>c.id===id?{...c,text,tag}:c);
+  state.editingCardId=null;state.editingText='';state.editingTag=null;save();render();
+}
+function cancelEdit(){state.editingCardId=null;state.editingText='';state.editingTag=null;render();}
+
+// ── Sketch ──
+let skCanvas=null,skCtx=null,skOff=null,skOffCtx=null,drawing=false;
+function initCanvas(){
+  skCanvas=document.getElementById('sketch-canvas');if(!skCanvas)return;
+  const W=skCanvas.parentElement.clientWidth||460;
+  skCanvas.width=W;skCanvas.height=Math.round(W*0.55);skCanvas.style.height=skCanvas.height+'px';
+  skCtx=skCanvas.getContext('2d');
+  skOff=document.createElement('canvas');skOff.width=skCanvas.width;skOff.height=skCanvas.height;
+  skOffCtx=skOff.getContext('2d');skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);
+  skOffCtx.lineCap='round';skOffCtx.lineJoin='round';
+  if(state.sketchModal?.cardId!=null){const c=state.cards.find(c=>c.id===state.sketchModal.cardId);if(c?.sketch){const img=new Image();img.onload=()=>{skOffCtx.drawImage(img,0,0,skOff.width,skOff.height);flush();};img.src=c.sketch;}else flush();}else flush();
+  attachPen();
+}
+function flush(){if(!skCtx||!skOff)return;skCtx.clearRect(0,0,skCanvas.width,skCanvas.height);skCtx.drawImage(skOff,0,0);}
+function getPos(e){const r=skCanvas.getBoundingClientRect();const sx=skCanvas.width/r.width,sy=skCanvas.height/r.height;return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};}
+function attachPen(){
+  if(!skCanvas)return;
+  let last=null;
+  skCanvas.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.width>30)return;e.preventDefault();drawing=true;last=getPos(e);skOffCtx.beginPath();skOffCtx.moveTo(last.x,last.y);},{passive:false});
+  skCanvas.addEventListener('pointermove',e=>{
+    if(!drawing||(e.pointerType==='touch'&&e.width>30))return;e.preventDefault();
+    const p=getPos(e),pr=Math.max(0.1,e.pressure||0.5);
+    skOffCtx.lineWidth=state.penSize*pr*1.5+state.penSize*0.5;skOffCtx.strokeStyle=state.penColor;
+    skOffCtx.lineTo(p.x,p.y);skOffCtx.stroke();skOffCtx.beginPath();skOffCtx.moveTo(p.x,p.y);
+    last=p;flush();
+  },{passive:false});
+  const stop=()=>{drawing=false;last=null;if(skOffCtx)skOffCtx.beginPath();};
+  skCanvas.addEventListener('pointerup',stop);skCanvas.addEventListener('pointercancel',stop);skCanvas.addEventListener('pointerleave',stop);
+}
+function clearSketch(){if(!skOffCtx)return;skOffCtx.clearRect(0,0,skOff.width,skOff.height);skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);flush();}
+async function saveSketch(cardId){
+  if(!skOff)return;
+  const dataURL=skOff.toDataURL('image/jpeg',0.75);
+  if(cardId==null){
+    const cards=getCardsForSection(state.activeSection);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
+    const nc={id:state.nextId++,workId:state.activeWork,section:state.activeSection,tag:state.newTag,text:'',sketch:dataURL,pageNum:0,os:maxOs,op:0};
+    state.cards.push(nc);await saveSketchIDB(nc.id,dataURL);
+  }else{state.cards=state.cards.map(c=>c.id===cardId?{...c,sketch:dataURL}:c);await saveSketchIDB(cardId,dataURL);}
+  save();state.sketchModal=null;render();
+}
+async function removeSketch(id){state.cards=state.cards.map(c=>c.id===id?{...c,sketch:null}:c);await delSketchIDB(id);save();render();}
+function openSketch(cardId){state.sketchModal={cardId};render();}
+function openSketchNew(){state.sketchModal={cardId:null};render();}
+
+// ── Export / Backup ──
+function exportText(){
+  const w=getWork();let out=`【${w?.name||'作品'}】\n\n`;
+  for(const sec of SECTIONS){const cards=getCardsForSection(sec);if(!cards.length)continue;out+=`■ ${sec}\n`;for(const c of cards)out+=`[${TAG_LABELS[c.tag]}]${c.text?' '+c.text:''}${c.sketch?' [図あり]':''}\n`;out+='\n';}
+  const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(out);a.download=`${w?.name||'manga'}_plot.txt`;a.click();
+}
+function exportBackup(){
+  const data=JSON.stringify({works:state.works,activeWork:state.activeWork,cards:state.cards,nextId:state.nextId,pageData:state.pageData});
+  const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);a.download=`manga_plot_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+}
+function importBackup(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    try{
+      const data=JSON.parse(await file.text());
+      state={...state,...data,showModal:false,sketchModal:null,editingCardId:null};
+      for(const c of state.cards){if(c.sketch)await saveSketchIDB(c.id,c.sketch);}
+      await save();render();
+    }catch(ex){alert('インポート失敗: '+ex.message);}
+  };inp.click();
+}
+
+// ── Render helpers ──
+function tagSelectEdit(currentTag){
+  return `<select class="tag-edit-select" onchange="setEditTag(this.value)">${Object.entries(TAG_LABELS).map(([k,v])=>`<option value="${k}"${k===currentTag?' selected':''}>${v}</option>`).join('')}</select>`;
+}
+function cardFooterHTML(c,secMoveOpts){
+  const workOpts=state.works.filter(w=>w.id!==c.workId).map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
+  return `<div class="card-footer">
+    <select class="card-move-select" onchange="moveCard(${c.id},this.value);this.value=''">
+      <option value="" disabled selected>Sec移動…</option>
+      ${secMoveOpts.map(s=>`<option value="${s}">${s}</option>`).join('')}
+    </select>
+    ${workOpts?`<select class="card-move-select" onchange="moveCardToWork(${c.id},this.value);this.value=''"><option value="" disabled selected>作品移動…</option>${workOpts}</select>`:''}
+    <div class="card-btns">
+      <button class="card-btn" onclick="startEdit(${c.id})">編集</button>
+      <button class="card-btn" onclick="openSketch(${c.id})">${c.sketch?'図編集':'図追加'}</button>
+      ${c.sketch?`<button class="card-btn" onclick="removeSketch(${c.id})">図削除</button>`:''}
+      <button class="card-btn" onclick="deleteCard(${c.id})">削除</button>
+    </div>
+  </div>`;
+}
+function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
+  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
+  return `<div class="card tag-${tag}" id="card-${c.id}"
+    draggable="${!editing}"
+    ondragstart="handleDragStartCard(${c.id},'${ctx}','${ctxVal}')"
+    ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over-card')"
+    ondragleave="this.classList.remove('drag-over-card')"
+    ondrop="handleDropOnCard(event,${c.id},'${ctx}','${ctxVal}')">
+    <div class="card-top">
+      <span class="card-tag-badge">${TAG_LABELS[tag]}</span>
+      ${!editing&&c.pageNum===0?`<span style="font-size:10px;color:var(--text3);padding:2px 6px;border:0.5px solid var(--border);border-radius:10px">ページ未定</span>`:''}
+      ${editing?tagSelectEdit(tag):''}
+    </div>
+    ${editing
+      ?`<textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
+        <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>`
+      :`${c.text?`<div class="card-text">${c.text.replace(/</g,'&lt;')}</div>`:''}
+        ${c.sketch?`<img class="card-sketch-thumb" src="${c.sketch}" onclick="openSketch(${c.id})" alt="スケッチ">`:''}
+        ${cardFooterHTML(c,secMoveOpts)}`
+    }
+  </div>`;
+}
+function compactCardHTML(c,pageMoveOpts,pn){
+  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
+  if(editing){return `<div class="card tag-${tag}" id="card-${c.id}" style="font-size:13px">
+    <div class="card-top"><span class="card-tag-badge">${TAG_LABELS[tag]}</span>${tagSelectEdit(tag)}</div>
+    <textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
+    <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>
+  </div>`;}
+  return `<div class="card-compact tag-${tag}" id="card-${c.id}"
+    draggable="true"
+    ondragstart="handleDragStartCard(${c.id},'page',${pn})"
+    ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over-card')"
+    ondragleave="this.classList.remove('drag-over-card')"
+    ondrop="handleDropOnCard(event,${c.id},'page',${pn})"
+    onclick="startEdit(${c.id})">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
+      <span class="card-compact-tag">${TAG_LABELS[tag]}</span>
+      <div style="display:flex;gap:3px" onclick="event.stopPropagation()">
+        <select style="font-size:10px;padding:1px 3px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text2)" onchange="moveCardToPage(${c.id},parseInt(this.value));this.value=''">
+          <option value="" disabled selected>↕p</option>${pageMoveOpts}
+        </select>
+        <button class="card-btn" style="font-size:10px;padding:2px 5px" onclick="deleteCard(${c.id})">×</button>
+      </div>
+    </div>
+    ${c.text?`<div class="card-compact-text">${c.text.replace(/</g,'&lt;')}</div>`:''}
+    ${c.sketch?`<img class="card-compact-sketch" src="${c.sketch}" alt="">`:''}
+  </div>`;
+}
+
+// ── Work management screen ──
+function workManagementHTML(){
+  const rows=state.works.map((w,i)=>{
+    const cardCount=state.cards.filter(c=>c.workId===w.id).length;
+    const isActive=w.id===state.activeWork;
+    return `<div class="work-row${isActive?' ':''}${isActive?'':''}" id="wrow-${w.id}"
+      draggable="true"
+      ondragstart="handleDragStartWork(${w.id})"
+      ondragover="event.preventDefault();document.getElementById('wrow-${w.id}').classList.add('drag-over-work')"
+      ondragleave="document.getElementById('wrow-${w.id}').classList.remove('drag-over-work')"
+      ondrop="handleDropOnWork(event,${w.id})"
+      style="${isActive?'border-color:var(--border2);box-shadow:inset 3px 0 0 var(--text)':''}">
+      <span class="work-row-drag-handle">⠿</span>
+      <div class="work-row-body">
+        <input class="work-name-input" type="text" value="${w.name.replace(/"/g,'&quot;')}"
+          onchange="renameWork(${w.id},this.value)"
+          onblur="renameWork(${w.id},this.value);save()">
+        <div class="work-row-meta">
+          <label>ページ数</label>
+          <input type="number" min="1" max="200" value="${w.pageCount}"
+            onchange="setWorkPageCount(${w.id},parseInt(this.value)||1);save()">
+          <span class="work-card-count">カード ${cardCount}枚</span>
+        </div>
+      </div>
+      <div class="work-row-btns">
+        <button class="work-row-btn open" onclick="openWork(${w.id})">開く</button>
+        <div style="display:flex;gap:4px">
+          <button class="work-row-btn" onclick="moveWorkUp(${w.id})" ${i===0?'disabled style="opacity:.3"':''}>↑</button>
+          <button class="work-row-btn" onclick="moveWorkDown(${w.id})" ${i===state.works.length-1?'disabled style="opacity:.3"':''}>↓</button>
+        </div>
+        <button class="work-row-btn del" onclick="deleteWork(${w.id})">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="work-list">${rows}</div>
+    <div class="work-add-row">
+      <input type="text" placeholder="新しい作品名…" value="${state.newWorkNameMgr.replace(/"/g,'&quot;')}"
+        id="wmgr-input"
+        oninput="state.newWorkNameMgr=this.value"
+        onkeydown="if(event.key==='Enter')addWorkFromMgr()">
+      <button class="btn btn-primary" onclick="addWorkFromMgr()">追加</button>
+    </div>`;
+}
+
+// ── Render ──
+function render(){
+  const app=document.getElementById('app');
+  const work=getWork();
+  const workOpts=state.works.map(w=>`<option value="${w.id}"${w.id===state.activeWork?' selected':''}>${w.name}</option>`).join('');
+  const tagPills=Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${state.newTag===k?' active':''}" onclick="state.newTag='${k}';state.penColor='${TAG_COLORS[k]}';render()">${v}</span>`).join('');
+  const secBtns=SECTIONS.map(s=>`<span class="pill" style="border-radius:20px;border:0.5px solid var(--border2);background:${state.activeSection===s?'var(--text)':'var(--bg)'};color:${state.activeSection===s?'#fff':'var(--text2)'};font-size:12px;padding:4px 10px;cursor:pointer" onclick="state.activeSection='${s}';render()">${s}</span>`).join('');
+
+  // Section board
+  const sectionBoardHTML=SECTIONS.map(sec=>{
+    const cards=getCardsForSection(sec);const collapsed=state.collapsedSections[sec];const secOpts=SECTIONS.filter(s=>s!==sec);
+    const innerFixed=collapsed?'':`<div class="cards-container" id="dsc-${sec}"
+      ondragover="event.preventDefault();document.getElementById('dsc-${sec}').classList.add('drag-over')"
+      ondragleave="document.getElementById('dsc-${sec}').classList.remove('drag-over')"
+      ondrop="handleDropSection(event,'${sec}')">
+      ${cards.length?cards.map(c=>fullCardHTML(c,secOpts,'section',sec)).join(''):`<div class="empty-msg">カードなし</div>`}
+    </div>`;
+    return `<div class="section-block">
+      <div class="section-header sec-${sec.toLowerCase()}" onclick="state.collapsedSections['${sec}']=!state.collapsedSections['${sec}'];render()">
+        <span class="sec-title">${sec}</span><span class="sec-count">${cards.length}枚 ${collapsed?'▶':'▼'}</span>
+      </div>${innerFixed}
+    </div>`;
+  }).join('');
+
+  // Page spread
+  const pc=work?work.pageCount:16;
+  const spreads=[['tbd',1]];
+  for(let i=2;i<=pc;i+=2)spreads.push([i,i+1<=pc?i+1:null]);
+  const tbdCards=state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===0).sort((a,b)=>(a.op??0)-(b.op??0));
+
+  function tbdColHTML(){
+    const moveOpts=Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}">${n}p</option>`).join('');
+    return `<div class="page-col">
+      <div class="page-col-header" style="background:var(--bg)"><span class="page-num" style="color:var(--text2)">未定</span></div>
+      <div class="page-cards" id="dp-0"
+        ondragover="event.preventDefault();document.getElementById('dp-0').classList.add('drag-over')"
+        ondragleave="document.getElementById('dp-0').classList.remove('drag-over')"
+        ondrop="handleDropPage(event,0)">
+        ${tbdCards.length?tbdCards.map(c=>compactCardHTML(c,moveOpts,0)).join(''):`<div class="empty-msg" style="font-size:12px">空</div>`}
+      </div>
+    </div>`;
+  }
+  function pageColHTML(pn){
+    if(!pn)return`<div class="page-col" style="flex:1;min-width:0"><div class="page-col-header"><span class="page-num" style="color:var(--text3)">—</span></div></div>`;
+    const pd=getPageData(pn);const bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
+    const cards=getCardsForPage(pn);
+    const moveOpts=`<option value="0">未定</option>`+Array.from({length:pc},(_,i)=>i+1).filter(n=>n!==pn).map(n=>`<option value="${n}">${n}p</option>`).join('');
+    return `<div class="page-col">
+      <div class="page-col-header ${bg}">
+        <span class="page-num">${pn}p</span>
+        <select class="sec-tag-select" onchange="setPageSection(${pn},this.value)" title="セクション">
+          ${SECTIONS.map(s=>`<option value="${s}"${pd.section===s?' selected':''}>${s}</option>`).join('')}
+          <option value=""${!pd.section?' selected':''}>—</option>
+        </select>
+      </div>
+      <div class="page-cards ${bg}" id="dp-${pn}"
+        ondragover="event.preventDefault();document.getElementById('dp-${pn}').classList.add('drag-over')"
+        ondragleave="document.getElementById('dp-${pn}').classList.remove('drag-over')"
+        ondrop="handleDropPage(event,${pn})">
+        ${cards.length?cards.map(c=>compactCardHTML(c,moveOpts,pn)).join(''):`<div class="empty-msg" style="font-size:12px">空</div>`}
+      </div>
+    </div>`;
+  }
+  const spreadHTML=spreads.map(([rp,lp])=>{
+    const label=rp==='tbd'?`${lp}ページ / 未定`:rp&&lp?`見開き ${lp}・${rp}ページ`:rp?`${rp}ページ`:`${lp}ページ`;
+    return `<div class="spread">
+      <div class="spread-label">${label}</div>
+      <div class="spread-pages">${pageColHTML(lp)}${rp==='tbd'?tbdColHTML():pageColHTML(rp)}</div>
+    </div>`;
+  }).join('');
+  const pageViewHTML=`
+    <div class="page-controls">
+      <label>総ページ数</label>
+      <input type="number" min="1" max="200" value="${pc}" onchange="updatePageCount(parseInt(this.value)||1)">
+      <span style="font-size:12px;color:var(--text3)">${pc}p / ${Math.ceil(pc/2)}見開き</span>
+    </div>
+    <div class="spread-list">${spreadHTML}</div>`;
+
+  // Sketch modal
+  const penSizeBtns=PEN_SIZES.map((s,i)=>`<button class="pen-size-btn${state.penSize===s?' active':''}" onclick="state.penSize=${s};document.querySelectorAll('.pen-size-btn').forEach((b,j)=>b.classList.toggle('active',j===${i}))"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="${1+i*1.5}" fill="currentColor"/></svg></button>`).join('');
+  const colorBtns=PEN_PALETTE.map(c=>`<button class="color-btn${state.penColor===c?' active':''}${c==='#ffffff'?' white-swatch':''}" style="background:${c}" onclick="state.penColor='${c}';document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')"></button>`).join('');
+  const sketchModalHTML=state.sketchModal?`<div class="modal-bg" onclick="if(event.target===this){state.sketchModal=null;render()}">
+    <div class="sketch-modal" onclick="event.stopPropagation()">
+      <div class="sketch-toolbar">
+        <label>太さ</label>${penSizeBtns}<label>色</label>${colorBtns}
+        <button class="card-btn" onclick="clearSketch()">全消去</button>
+      </div>
+      <canvas id="sketch-canvas"></canvas>
+      <div class="sketch-btns">
+        <button onclick="state.sketchModal=null;render()">キャンセル</button>
+        <button class="btn-primary" onclick="saveSketch(${state.sketchModal.cardId})">保存</button>
+      </div>
+    </div>
+  </div>`:'';
+
+  const workModalHTML=state.showModal?`<div class="modal-bg" onclick="if(event.target===this){state.showModal=false;render()}">
+    <div class="modal"><h3>新しい作品</h3>
+      <input id="wni" type="text" placeholder="作品名" oninput="state.newWorkName=this.value" onkeydown="if(event.key==='Enter')addWork()">
+      <div class="modal-btns"><button onclick="state.showModal=false;render()">キャンセル</button><button class="btn-primary" onclick="addWork()">追加</button></div>
+    </div>
+  </div>`:'';
+
+  // カード追加エリアは作品管理タブでは非表示
+  const isWorkMgr=state.tab==='works';
+
+  app.innerHTML=`
+    <div class="top-bar">
+      <select class="work-select" onchange="state.activeWork=parseInt(this.value);save();render()">${workOpts}</select>
+    </div>
+    ${!isWorkMgr?`
+    <div class="quick-add">
+      <textarea id="card-input" rows="3" placeholder="アイデアをメモ…" oninput="state.newText=this.value">${state.newText.replace(/</g,'&lt;')}</textarea>
+      <div class="quick-footer">
+        <div class="tag-pills">${tagPills}</div>
+        <button class="btn" onclick="addCard()">追加</button>
+        <button class="btn" onclick="openSketchNew()">図</button>
+      </div>
+    </div>`:''}
+    <div class="tabs">
+      <button class="tab${state.tab==='page'?' active':''}" onclick="state.tab='page';render()">ページ見開き</button>
+      <button class="tab${state.tab==='section'?' active':''}" onclick="state.tab='section';render()">セクション一覧</button>
+      <button class="tab${state.tab==='works'?' active':''}" onclick="state.tab='works';render()">作品管理</button>
+    </div>
+    ${state.tab==='page'?pageViewHTML:state.tab==='section'?sectionBoardHTML:workManagementHTML()}
+    ${!isWorkMgr?`<div class="export-row">
+      <button class="btn" onclick="exportText()">テキスト書き出し</button>
+      <button class="btn" onclick="exportBackup()">書き出し</button>
+      <button class="btn" onclick="importBackup()">読み込み</button>
+    </div>`:''}
+    ${sketchModalHTML}${workModalHTML}
+  `;
+
+  if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
+}
+
+// ── Init ──
+(async()=>{
+  try{
+    db=await openDB();await loadAll();
+    const notice=document.getElementById('db-notice');if(notice)notice.remove();
+  }catch(e){
+    console.error('DB error',e);
+    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
+  }
+  render();
+})();
+</script>
+</body>
+</html>.quick-add textarea{width:100%;font-size:15px;resize:none;border:none;outline:none;background:transparent;color:var(--text);line-height:1.6;min-height:44px}
+.quick-footer{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.tag-pills{display:flex;gap:5px;flex:1;flex-wrap:wrap}
+.pill{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid;cursor:pointer;transition:all .12s;font-weight:500}
+.pill-emotion{border-color:var(--emotion-border);color:var(--emotion);background:var(--emotion-bg)}
+.pill-emotion.active{background:var(--emotion);color:#fff;border-color:var(--emotion)}
+.pill-serif{border-color:var(--serif-border);color:var(--serif);background:var(--serif-bg)}
+.pill-serif.active{background:var(--serif);color:#fff;border-color:var(--serif)}
+.pill-action{border-color:var(--action-border);color:var(--action);background:var(--action-bg)}
+.pill-action.active{background:var(--action);color:#fff;border-color:var(--action)}
+.pill-explain{border-color:var(--explain-border);color:var(--explain);background:var(--explain-bg)}
+.pill-explain.active{background:var(--explain);color:#fff;border-color:var(--explain)}
+.pill-memo{border-color:var(--memo-border);color:var(--memo);background:var(--memo-bg)}
+.pill-memo.active{background:var(--memo);color:#fff;border-color:var(--memo)}
+.pill-note{border-color:var(--note-border);color:var(--note);background:var(--note-bg)}
+.pill-note.active{background:var(--note);color:#fff;border-color:var(--note)}
+
+/* Section board */
+.section-block{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer}
+.section-header.sec-op{background:var(--sec-op)}
+.section-header.sec-pp1{background:var(--sec-pp1)}
+.section-header.sec-mp{background:var(--sec-mp)}
+.section-header.sec-pp2{background:var(--sec-pp2)}
+.section-header.sec-ed{background:var(--sec-ed)}
+.section-header.sec-note{background:var(--sec-note)}
+.sec-title{font-size:13px;font-weight:500}
+.sec-count{font-size:12px;color:var(--text2)}
+.cards-container{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:36px;background:var(--surface)}
+.cards-container.drag-over{outline:2px dashed var(--border2);outline-offset:-4px;border-radius:6px}
+
+/* Card */
+.card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab;position:relative}
+.card:active{cursor:grabbing;opacity:.85}
+.card.drag-over-card{outline:2px solid var(--border2);outline-offset:-2px}
+.card-top{display:flex;align-items:center;gap:8px}
+.card-tag-badge{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;flex-shrink:0}
+.tag-emotion{border-left:3px solid var(--emotion)}
+.tag-emotion .card-tag-badge{background:var(--emotion-bg);color:var(--emotion);border:1px solid var(--emotion-border)}
+.tag-serif{border-left:3px solid var(--serif)}
+.tag-serif .card-tag-badge{background:var(--serif-bg);color:var(--serif);border:1px solid var(--serif-border)}
+.tag-action{border-left:3px solid var(--action)}
+.tag-action .card-tag-badge{background:var(--action-bg);color:var(--action);border:1px solid var(--action-border)}
+.tag-explain{border-left:3px solid var(--explain)}
+.tag-explain .card-tag-badge{background:var(--explain-bg);color:var(--explain);border:1px solid var(--explain-border)}
+.tag-memo{border-left:3px solid var(--memo)}
+.tag-memo .card-tag-badge{background:var(--memo-bg);color:var(--memo);border:1px solid var(--memo-border)}
+.tag-note{border-left:3px solid var(--note)}
+.tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
+.card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
+.card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
+.card-sketch-thumb{width:100%;border-radius:6px;border:0.5px solid var(--border);display:block;cursor:pointer;background:#fff;max-height:160px;object-fit:contain}
+.card-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.card-move-select{font-size:12px;padding:2px 6px;border-radius:6px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);max-width:90px}
+.card-btns{display:flex;gap:4px;flex-wrap:wrap}
+.card-btn{font-size:11px;padding:3px 8px;color:var(--text2);background:transparent;border:0.5px solid var(--border);border-radius:5px;cursor:pointer}
+.card-btn:active{background:var(--bg)}
+.card-btn.save{background:var(--text);color:#fff;border-color:var(--text)}
+.empty-msg{font-size:13px;color:var(--text3);padding:6px 4px}
+
+/* Page spread */
+.page-controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.page-controls label{font-size:13px;color:var(--text2)}
+.page-controls input[type=number]{width:64px;padding:5px 8px;font-size:14px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface)}
+.spread-list{display:flex;flex-direction:column;gap:16px}
+.spread{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.spread-label{font-size:11px;color:var(--text3);padding:4px 10px;background:var(--bg);border-bottom:0.5px solid var(--border)}
+.spread-pages{display:flex}
+.page-col{flex:1;min-width:0;border-left:0.5px solid var(--border)}
+.page-col:first-child{border-left:none}
+.page-col-header{padding:6px 8px;display:flex;align-items:center;justify-content:space-between;gap:4px;border-bottom:0.5px solid var(--border)}
+.page-num{font-size:12px;font-weight:500;color:var(--text2)}
+.sec-tag-select{font-size:11px;padding:2px 4px;border-radius:4px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);max-width:72px}
+.page-cards{padding:6px;display:flex;flex-direction:column;gap:5px;min-height:60px}
+.page-cards.drag-over{outline:2px dashed var(--border2);outline-offset:-2px;border-radius:6px}
+.page-bg-op{background:var(--sec-op)!important}
+.page-bg-pp1{background:var(--sec-pp1)!important}
+.page-bg-mp{background:var(--sec-mp)!important}
+.page-bg-pp2{background:var(--sec-pp2)!important}
+.page-bg-ed{background:var(--sec-ed)!important}
+.page-bg-note{background:var(--sec-note)!important}
+
+/* Compact card */
+.card-compact{background:var(--surface);border:0.5px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;cursor:pointer;font-size:12px}
+.card-compact.tag-emotion{border-left:3px solid var(--emotion)}
+.card-compact.tag-serif{border-left:3px solid var(--serif)}
+.card-compact.tag-action{border-left:3px solid var(--action)}
+.card-compact.tag-explain{border-left:3px solid var(--explain)}
+.card-compact.tag-memo{border-left:3px solid var(--memo)}
+.card-compact.tag-note{border-left:3px solid var(--note)}
+.card-compact-tag{font-size:10px;font-weight:600}
+.tag-emotion .card-compact-tag{color:var(--emotion)}
+.tag-serif .card-compact-tag{color:var(--serif)}
+.tag-action .card-compact-tag{color:var(--action)}
+.tag-explain .card-compact-tag{color:var(--explain)}
+.tag-memo .card-compact-tag{color:var(--memo)}
+.tag-note .card-compact-tag{color:var(--note)}
+.card-compact-text{color:var(--text);line-height:1.4;white-space:pre-wrap;word-break:break-all}
+.card-compact-sketch{width:100%;border-radius:4px;border:0.5px solid var(--border);display:block;max-height:80px;object-fit:contain;background:#fff}
+
+/* Modals */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:12px}
+.modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:340px;border:0.5px solid var(--border)}
+.modal h3{font-size:16px;font-weight:500;margin-bottom:12px}
+.modal input{width:100%;font-size:14px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:inherit;margin-bottom:12px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.sketch-modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:460px;border:0.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sketch-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:0.5px solid var(--border);flex-wrap:wrap}
+.sketch-toolbar label{font-size:12px;color:var(--text2)}
+.pen-size-btn{width:28px;height:28px;border-radius:50%;border:0.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pen-size-btn.active{border-color:#534AB7;background:#EEEDFE}
+.color-btn{width:22px;height:22px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;flex-shrink:0}
+.color-btn.white-swatch{border:1.5px solid var(--border2)!important}
+.color-btn.active{border-color:var(--text)!important}
+canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;cursor:crosshair}
+.sketch-btns{display:flex;gap:8px;padding:10px 12px;border-top:0.5px solid var(--border)}
+.sketch-btns button{flex:1;padding:8px;font-size:13px}
+.export-row{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.export-row button{flex:1;font-size:13px;padding:8px;min-width:80px}
+.tag-edit-select{font-size:11px;padding:2px 6px;border-radius:5px;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2)}
+.db-notice{font-size:11px;color:var(--text3);text-align:center;padding:2px 0 8px}
+
+/* ── Work management ── */
+.work-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.work-row{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:grab}
+.work-row:active{opacity:.8;cursor:grabbing}
+.work-row.drag-over-work{outline:2px solid var(--border2);outline-offset:-2px}
+.work-row-drag-handle{color:var(--text3);font-size:18px;line-height:1;flex-shrink:0;user-select:none}
+.work-row-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.work-name-input{width:100%;font-size:15px;font-weight:500;border:none;outline:none;background:transparent;color:var(--text);padding:0}
+.work-name-input:focus{background:var(--bg);border-radius:4px;padding:3px 6px}
+.work-row-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.work-row-meta label{font-size:12px;color:var(--text2)}
+.work-row-meta input[type=number]{width:56px;padding:3px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:5px;background:var(--bg)}
+.work-card-count{font-size:12px;color:var(--text3)}
+.work-row-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.work-row-btn{font-size:11px;padding:4px 10px;border:0.5px solid var(--border);border-radius:5px;background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap}
+.work-row-btn:active{background:var(--bg)}
+.work-row-btn.del{color:#e24b4a;border-color:#f5b8b8}
+.work-row-btn.del:active{background:#fef0f0}
+.work-row-btn.open{background:var(--text);color:#fff;border-color:var(--text)}
+.work-add-row{display:flex;gap:8px;align-items:center}
+.work-add-row input{flex:1;font-size:14px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--surface);color:var(--text)}
+</style>
+</head>
+<body>
+<div class="app" id="app"><div class="db-notice" id="db-notice">読み込み中…</div></div>
+<script>
+const SECTIONS=['OP','PP1','MP','PP2','ED','Note'];
+const TAG_LABELS={emotion:'感情',serif:'セリフ',action:'アクション',explain:'説明',memo:'メモ'};
+const TAG_COLORS={emotion:'#e24b4a',serif:'#185FA5',action:'#2a8a4a',explain:'#1a1916',memo:'#b07d10'};
+const SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg-pp2',ED:'page-bg-ed',Note:'page-bg-note'};
+const PEN_SIZES=[2,4,8];
+const PEN_PALETTE=['#e24b4a','#185FA5','#2a8a4a','#1a1916','#b07d10','#7b3fb5','#888888','#ffffff'];
+
+let state={
+  works:[{id:1,name:'作品1',pageCount:16}],
+  activeWork:1,activeSection:'OP',cards:[],nextId:1,
+  newText:'',newTag:'emotion',tab:'page',
+  showModal:false,newWorkName:'',
+  collapsedSections:{},sketchModal:null,
+  editingCardId:null,editingText:'',editingTag:null,
+  penColor:TAG_COLORS.emotion,penSize:PEN_SIZES[1],
+  pageData:[],
+  // work management
+  newWorkNameMgr:'',
+};
+
+// ── IndexedDB ──
+let db=null;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open('manga_plot_v4',1);
+    r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('state'))d.createObjectStore('state');if(!d.objectStoreNames.contains('sketches'))d.createObjectStore('sketches');};
+    r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);
+  });
+}
+function idbGet(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readonly');const r=tx.objectStore(store).get(key);r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);});}
+function idbPut(store,key,val){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).put(val,key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
+function idbDel(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).delete(key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
+
+async function save(){
+  if(!db)return;
+  const slim=state.cards.map(c=>{const{sketch,...rest}=c;return rest;});
+  await idbPut('state','main',{works:state.works,activeWork:state.activeWork,cards:slim,nextId:state.nextId,tab:state.tab,pageData:state.pageData});
+}
+async function saveSketchIDB(id,dataURL){if(db)await idbPut('sketches',id,dataURL);}
+async function delSketchIDB(id){if(db)await idbDel('sketches',id);}
+async function loadAll(){
+  const saved=await idbGet('state','main');
+  if(saved)state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null};
+  for(const c of state.cards){try{const sk=await idbGet('sketches',c.id);if(sk)c.sketch=sk;}catch(e){}}
+}
+
+// ── Helpers ──
+const getWork=()=>state.works.find(w=>w.id===state.activeWork);
+function getPageData(n){return state.pageData.find(p=>p.workId===state.activeWork&&p.pageNum===n)||{workId:state.activeWork,pageNum:n,section:''};}
+function setPageSection(n,sec){
+  const i=state.pageData.findIndex(p=>p.workId===state.activeWork&&p.pageNum===n);
+  if(i>=0)state.pageData[i].section=sec;else state.pageData.push({workId:state.activeWork,pageNum:n,section:sec});
   save();render();
 }
 function getCardsForPage(n){return state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===n).sort((a,b)=>(a.op??0)-(b.op??0));}
