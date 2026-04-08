@@ -11,10 +11,10 @@
   --bg:#f7f6f2;--surface:#ffffff;--border:#e0ddd6;--border2:#c8c4bc;
   --text:#1a1916;--text2:#6b6860;--text3:#a8a49e;
   --radius:10px;--radius-sm:7px;
-  --emotion:#e24b4a;--emotion-bg:#fef0f0;--emotion-border:#f5b8b8;
-  --serif:#185FA5;--serif-bg:#e8f1fb;--serif-border:#b5cef0;
-  --action:#2a8a4a;--action-bg:#e8f5ed;--action-border:#9fd4b2;
-  --explain:#1a1916;--explain-bg:#f0efe8;--explain-border:#c8c4bc;
+  --plot:#185FA5;--plot-bg:#e8f1fb;--plot-border:#b5cef0;
+  --hako:#2a8a4a;--hako-bg:#e8f5ed;--hako-border:#9fd4b2;
+  --serif:#e24b4a;--serif-bg:#fef0f0;--serif-border:#f5b8b8;
+  --name:#1a1916;--name-bg:#f0efe8;--name-border:#c8c4bc;
   --memo:#b07d10;--memo-bg:#fef8e6;--memo-border:#f0d080;
   --note:#7b3fb5;--note-bg:#f3eafc;--note-border:#cba8ef;
   --sec-op:#ffe0eb;--sec-pp1:#ddf0d0;--sec-mp:#ffe8d0;--sec-pp2:#ead8f8;--sec-ed:#d0eef8;--sec-note:#e8e6e2;
@@ -42,14 +42,14 @@ button,select,input,textarea{font-family:inherit}
 .quick-footer{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
 .tag-pills{display:flex;gap:5px;flex:1;flex-wrap:wrap}
 .pill{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid;cursor:pointer;transition:all .12s;font-weight:500}
-.pill-emotion{border-color:var(--emotion-border);color:var(--emotion);background:var(--emotion-bg)}
-.pill-emotion.active{background:var(--emotion);color:#fff;border-color:var(--emotion)}
+.pill-plot{border-color:var(--plot-border);color:var(--plot);background:var(--plot-bg)}
+.pill-plot.active{background:var(--plot);color:#fff;border-color:var(--plot)}
+.pill-hako{border-color:var(--hako-border);color:var(--hako);background:var(--hako-bg)}
+.pill-hako.active{background:var(--hako);color:#fff;border-color:var(--hako)}
 .pill-serif{border-color:var(--serif-border);color:var(--serif);background:var(--serif-bg)}
 .pill-serif.active{background:var(--serif);color:#fff;border-color:var(--serif)}
-.pill-action{border-color:var(--action-border);color:var(--action);background:var(--action-bg)}
-.pill-action.active{background:var(--action);color:#fff;border-color:var(--action)}
-.pill-explain{border-color:var(--explain-border);color:var(--explain);background:var(--explain-bg)}
-.pill-explain.active{background:var(--explain);color:#fff;border-color:var(--explain)}
+.pill-name{border-color:var(--name-border);color:var(--name);background:var(--name-bg)}
+.pill-name.active{background:var(--name);color:#fff;border-color:var(--name)}
 .pill-memo{border-color:var(--memo-border);color:var(--memo);background:var(--memo-bg)}
 .pill-memo.active{background:var(--memo);color:#fff;border-color:var(--memo)}
 .pill-note{border-color:var(--note-border);color:var(--note);background:var(--note-bg)}
@@ -81,14 +81,14 @@ button,select,input,textarea{font-family:inherit}
 .card.drag-over-card{outline:2px solid var(--border2);outline-offset:-2px}
 .card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card-tag-badge{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;flex-shrink:0}
-.tag-emotion{border-left:3px solid var(--emotion)}
-.tag-emotion .card-tag-badge{background:var(--emotion-bg);color:var(--emotion);border:1px solid var(--emotion-border)}
+.tag-plot{border-left:3px solid var(--plot)}
+.tag-plot .card-tag-badge{background:var(--plot-bg);color:var(--plot);border:1px solid var(--plot-border)}
+.tag-hako{border-left:3px solid var(--hako)}
+.tag-hako .card-tag-badge{background:var(--hako-bg);color:var(--hako);border:1px solid var(--hako-border)}
 .tag-serif{border-left:3px solid var(--serif)}
 .tag-serif .card-tag-badge{background:var(--serif-bg);color:var(--serif);border:1px solid var(--serif-border)}
-.tag-action{border-left:3px solid var(--action)}
-.tag-action .card-tag-badge{background:var(--action-bg);color:var(--action);border:1px solid var(--action-border)}
-.tag-explain{border-left:3px solid var(--explain)}
-.tag-explain .card-tag-badge{background:var(--explain-bg);color:var(--explain);border:1px solid var(--explain-border)}
+.tag-name{border-left:3px solid var(--name)}
+.tag-name .card-tag-badge{background:var(--name-bg);color:var(--name);border:1px solid var(--name-border)}
 .tag-memo{border-left:3px solid var(--memo)}
 .tag-memo .card-tag-badge{background:var(--memo-bg);color:var(--memo);border:1px solid var(--memo-border)}
 .tag-note{border-left:3px solid var(--note)}
@@ -133,17 +133,17 @@ button,select,input,textarea{font-family:inherit}
 
 /* Compact card */
 .card-compact{background:var(--surface);border:0.5px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;cursor:pointer;font-size:12px}
-.card-compact.tag-emotion{border-left:3px solid var(--emotion)}
+.card-compact.tag-plot{border-left:3px solid var(--plot)}
+.card-compact.tag-hako{border-left:3px solid var(--hako)}
 .card-compact.tag-serif{border-left:3px solid var(--serif)}
-.card-compact.tag-action{border-left:3px solid var(--action)}
-.card-compact.tag-explain{border-left:3px solid var(--explain)}
+.card-compact.tag-name{border-left:3px solid var(--name)}
 .card-compact.tag-memo{border-left:3px solid var(--memo)}
 .card-compact.tag-note{border-left:3px solid var(--note)}
 .card-compact-tag{font-size:10px;font-weight:600}
-.tag-emotion .card-compact-tag{color:var(--emotion)}
+.tag-plot .card-compact-tag{color:var(--plot)}
+.tag-hako .card-compact-tag{color:var(--hako)}
 .tag-serif .card-compact-tag{color:var(--serif)}
-.tag-action .card-compact-tag{color:var(--action)}
-.tag-explain .card-compact-tag{color:var(--explain)}
+.tag-name .card-compact-tag{color:var(--name)}
 .tag-memo .card-compact-tag{color:var(--memo)}
 .tag-note .card-compact-tag{color:var(--note)}
 .card-compact-text{color:var(--text);line-height:1.4;white-space:pre-wrap;word-break:break-all}
@@ -203,24 +203,25 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 <script>
 // Note を先頭に
 const SECTIONS=['Note','OP','PP1','MP','PP2','ED'];
-const TAG_LABELS={emotion:'感情',serif:'セリフ',action:'アクション',explain:'説明',memo:'メモ'};
-const TAG_COLORS={emotion:'#e24b4a',serif:'#185FA5',action:'#2a8a4a',explain:'#1a1916',memo:'#b07d10'};
+const TAG_LABELS={plot:'プロット',hako:'箱書き',serif:'セリフ',memo:'メモ',name:'ネーム'};
+const TAG_COLORS={plot:'#185FA5',hako:'#2a8a4a',serif:'#e24b4a',memo:'#b07d10',name:'#1a1916'};
 const SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg-pp2',ED:'page-bg-ed',Note:'page-bg-note'};
 const PEN_SIZES=[2,4,8];
-const PEN_PALETTE=['#e24b4a','#185FA5','#2a8a4a','#1a1916','#b07d10','#7b3fb5','#888888','#ffffff'];
+const PEN_PALETTE=['#185FA5','#2a8a4a','#e24b4a','#b07d10','#1a1916','#7b3fb5','#888888','#ffffff'];
 // B4比率: 257mm x 364mm → height/width = 364/257 ≈ 1.4163
 const B4_RATIO=364/257;
 
 let state={
   works:[{id:1,name:'作品1',pageCount:16,logline:''}],
   activeWork:1,cards:[],nextId:1,
-  newText:'',newTag:'emotion',tab:'page',
+  newText:'',newTag:'plot',tab:'page',
   showModal:false,newWorkName:'',
   collapsedSections:{},sketchModal:null,
   editingCardId:null,editingText:'',editingTag:null,
-  penColor:TAG_COLORS.emotion,penSize:PEN_SIZES[1],
+  penColor:TAG_COLORS.plot,penSize:PEN_SIZES[1],
   pageData:[],
   newWorkNameMgr:'',
+  filterTags:{page:[],section:[]},
   // セクションごとのログライン {workId_sec: text}
   secLoglines:{},
   // セクションごとのソート順 {workId_sec: 'page'|'manual'}
@@ -287,6 +288,15 @@ function getCardsForSection(sec){
     });
   }
   return cards.sort((a,b)=>(a.os??0)-(b.os??0));
+}
+function toggleFilterTag(view,tag){
+  const list=state.filterTags[view]||[];
+  state.filterTags[view]=list.includes(tag)?list.filter(t=>t!==tag):[...list,tag];
+  render();
+}
+function matchesFilter(card,view){
+  const filters=state.filterTags[view]||[];
+  return !filters.length||filters.includes(card.tag);
 }
 function secSortKey(sec){return`${state.activeWork}_${sec}`;}
 function getSortMode(sec){return state.secSortMode[secSortKey(sec)]||'page';}
@@ -602,10 +612,11 @@ function render(){
   const work=getWork();
   const workOpts=state.works.map(w=>`<option value="${w.id}"${w.id===state.activeWork?' selected':''}>${w.name}</option>`).join('');
   const tagPills=Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${state.newTag===k?' active':''}" onclick="state.newTag='${k}';state.penColor='${TAG_COLORS[k]}';render()">${v}</span>`).join('');
+  const filterPills=view=>Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${(state.filterTags[view]||[]).includes(k)?' active':''}" onclick="toggleFilterTag('${view}','${k}')">${v}</span>`).join('');
 
   // Section board — Note 先頭、各セクションにログライン・ページ数設定・ソート切替
   const sectionBoardHTML=SECTIONS.map(sec=>{
-    const cards=getCardsForSection(sec);
+    const cards=getCardsForSection(sec).filter(c=>matchesFilter(c,'section'));
     const collapsed=state.collapsedSections[sec];
     const secOpts=SECTIONS.filter(s=>s!==sec);
     const ll=getSecLogline(sec);
@@ -633,7 +644,7 @@ function render(){
   const pc=work?work.pageCount:16;
   const spreads=[['tbd',1]];
   for(let i=2;i<=pc;i+=2)spreads.push([i,i+1<=pc?i+1:null]);
-  const tbdCards=state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===0).sort((a,b)=>(a.op??0)-(b.op??0));
+  const tbdCards=state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===0&&matchesFilter(c,'page')).sort((a,b)=>(a.op??0)-(b.op??0));
 
   function tbdColHTML(){
     const moveOpts=Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}">${n}p</option>`).join('');
@@ -650,7 +661,7 @@ function render(){
   function pageColHTML(pn){
     if(!pn)return`<div class="page-col" style="flex:1;min-width:0"><div class="page-col-header"><span class="page-num" style="color:var(--text3)">—</span></div></div>`;
     const pd=getPageData(pn);const bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
-    const cards=getCardsForPage(pn);
+    const cards=getCardsForPage(pn).filter(c=>matchesFilter(c,'page'));
     const moveOpts=`<option value="0">未定</option>`+Array.from({length:pc},(_,i)=>i+1).filter(n=>n!==pn).map(n=>`<option value="${n}">${n}p</option>`).join('');
     return `<div class="page-col">
       <div class="page-col-header ${bg}">
@@ -680,6 +691,9 @@ function render(){
       <label>総ページ数</label>
       <input type="number" min="1" max="200" value="${pc}" onchange="updatePageCount(parseInt(this.value)||1)">
       <span style="font-size:12px;color:var(--text3)">${pc}p / ${Math.ceil(pc/2)}見開き</span>
+    </div>
+    <div class="quick-add" style="padding:10px 12px">
+      <div class="tag-pills">${filterPills('page')}</div>
     </div>
     <div class="spread-list">${spreadHTML}</div>`;
 
@@ -732,7 +746,7 @@ function render(){
       <button class="tab${state.tab==='section'?' active':''}" onclick="state.tab='section';render()">セクション一覧</button>
       <button class="tab${state.tab==='works'?' active':''}" onclick="state.tab='works';render()">作品管理</button>
     </div>
-    ${state.tab==='page'?pageViewHTML:state.tab==='section'?sectionBoardHTML:workManagementHTML()}
+    ${state.tab==='page'?pageViewHTML:state.tab==='section'?`<div class="quick-add" style="padding:10px 12px"><div class="tag-pills">${filterPills('section')}</div></div>${sectionBoardHTML}`:workManagementHTML()}
     ${!isWorkMgr?`<div class="export-row">
       <button class="btn" onclick="exportText()">テキスト書き出し</button>
       <button class="btn" onclick="exportBackup()">書き出し</button>
