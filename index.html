@@ -769,4 +769,13 @@ function render(){
 (async()=>{
   try{
     db=await openDB();await loadAll();
-    const notice=document.getElementById('db-notic
+    const notice=document.getElementById('db-notice');if(notice)notice.remove();
+  }catch(e){
+    console.error('DB error',e);
+    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
+  }
+  render();
+})();
+</script>
+</body>
+</html>
