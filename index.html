@@ -801,14 +801,18 @@ function render(){
   if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
 }
 
+// ── Global error display ──
+window.onerror=function(msg,src,line){var d=document.getElementById("app");if(d)d.innerHTML="<div style='padding:20px;font-size:13px;color:#e24b4a;word-break:break-all'>ERROR: "+msg+" ("+line+")</div>";return true;};
+
 // ── Init ──
 (async()=>{
+  try{db=await openDB();}catch(e){console.warn('IDB unavailable',e);db=null;}
   try{
-    db=await openDB();await loadAll();
+    await loadAll();
     const notice=document.getElementById('db-notice');if(notice)notice.remove();
   }catch(e){
-    console.error('DB error',e);
-    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
+    console.error('loadAll error',e);
+    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データ読み込みエラー。';
   }
   render();
 })();
