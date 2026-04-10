@@ -31,12 +31,9 @@ button,select,input,textarea{font-family:inherit}
 .tabs{display:flex;margin-bottom:12px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);overflow:hidden;background:var(--bg)}
 .tab{flex:1;padding:8px 0;text-align:center;font-size:13px;cursor:pointer;color:var(--text2);transition:all .12s;border:none;background:transparent}
 .tab.active{background:var(--surface);color:var(--text);font-weight:500}
-
-/* logline bar */
 .logline-bar{margin-bottom:10px;padding:0 2px}
 .logline-input{width:100%;font-size:13px;color:var(--text2);border:none;outline:none;background:transparent;line-height:1.5;resize:none;padding:0}
 .logline-input::placeholder{color:var(--text3)}
-
 .quick-add{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px}
 .quick-add textarea{width:100%;font-size:15px;resize:none;border:none;outline:none;background:transparent;color:var(--text);line-height:1.6;min-height:44px}
 .quick-footer{display:flex;gap:6px;margin-top:8px;align-items:center;flex-wrap:wrap}
@@ -54,15 +51,11 @@ button,select,input,textarea{font-family:inherit}
 .pill-memo.active{background:var(--memo);color:#fff;border-color:var(--memo)}
 .pill-note{border-color:var(--note-border);color:var(--note);background:var(--note-bg)}
 .pill-note.active{background:var(--note);color:#fff;border-color:var(--note)}
-
-/* Section board */
 .section-block{border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:8px}
 .section-header{display:flex;align-items:center;gap:6px;padding:8px 12px;cursor:pointer;flex-wrap:wrap}
 .section-header.sec-op{background:var(--sec-op)}.section-header.sec-pp1{background:var(--sec-pp1)}
-.section-header.sec-mp{background:var(--sec-mp)}
-.section-header.sec-pp2{background:var(--sec-pp2)}
-.section-header.sec-ed{background:var(--sec-ed)}
-.section-header.sec-note{background:var(--sec-note)}
+.section-header.sec-mp{background:var(--sec-mp)}.section-header.sec-pp2{background:var(--sec-pp2)}
+.section-header.sec-ed{background:var(--sec-ed)}.section-header.sec-note{background:var(--sec-note)}
 .sec-title{font-size:13px;font-weight:500;flex-shrink:0}
 .sec-count{font-size:12px;color:var(--text2);flex-shrink:0}
 .sec-chevron{font-size:11px;color:var(--text3);margin-left:auto;flex-shrink:0}
@@ -70,26 +63,17 @@ button,select,input,textarea{font-family:inherit}
 .sec-logline::placeholder{color:var(--text3)}
 .cards-container{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:36px;background:var(--surface)}
 .cards-container.drag-over{outline:2px dashed var(--border2);outline-offset:-4px;border-radius:6px}
-
-/* Card */
 .card{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab;position:relative}
 .card:active{cursor:grabbing;opacity:.85}
 .card.drag-over-card{outline:2px solid var(--border2);outline-offset:-2px}
 .card-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .card-tag-badge{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:600;flex-shrink:0}
-.tag-plot{border-left:3px solid var(--plot)}
-.tag-plot .card-tag-badge{background:var(--plot-bg);color:var(--plot);border:1px solid var(--plot-border)}
-.tag-hako{border-left:3px solid var(--hako)}
-.tag-hako .card-tag-badge{background:var(--hako-bg);color:var(--hako);border:1px solid var(--hako-border)}
-.tag-serif{border-left:3px solid var(--serif)}
-.tag-serif .card-tag-badge{background:var(--serif-bg);color:var(--serif);border:1px solid var(--serif-border)}
-.tag-name{border-left:3px solid var(--name)}
-.tag-name .card-tag-badge{background:var(--name-bg);color:var(--name);border:1px solid var(--name-border)}
-.tag-memo{border-left:3px solid var(--memo)}
-.tag-memo .card-tag-badge{background:var(--memo-bg);color:var(--memo);border:1px solid var(--memo-border)}
-.tag-note{border-left:3px solid var(--note)}
-.tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
-.card-page-badge{font-size:10px;padding:2px 6px;border:0.5px solid var(--border);border-radius:10px;color:var(--text3)}
+.tag-plot{border-left:3px solid var(--plot)}.tag-plot .card-tag-badge{background:var(--plot-bg);color:var(--plot);border:1px solid var(--plot-border)}
+.tag-hako{border-left:3px solid var(--hako)}.tag-hako .card-tag-badge{background:var(--hako-bg);color:var(--hako);border:1px solid var(--hako-border)}
+.tag-serif{border-left:3px solid var(--serif)}.tag-serif .card-tag-badge{background:var(--serif-bg);color:var(--serif);border:1px solid var(--serif-border)}
+.tag-name{border-left:3px solid var(--name)}.tag-name .card-tag-badge{background:var(--name-bg);color:var(--name);border:1px solid var(--name-border)}
+.tag-memo{border-left:3px solid var(--memo)}.tag-memo .card-tag-badge{background:var(--memo-bg);color:var(--memo);border:1px solid var(--memo-border)}
+.tag-note{border-left:3px solid var(--note)}.tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
 .card-page-select{font-size:11px;padding:2px 5px;border:0.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text2);cursor:pointer}
 .card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
 .card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
@@ -101,8 +85,6 @@ button,select,input,textarea{font-family:inherit}
 .card-btn:active{background:var(--bg)}
 .card-btn.save{background:var(--text);color:#fff;border-color:var(--text)}
 .empty-msg{font-size:13px;color:var(--text3);padding:6px 4px}
-
-/* Page spread */
 .page-controls{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .page-controls label{font-size:13px;color:var(--text2)}
 .page-controls input[type=number]{width:64px;padding:5px 8px;font-size:14px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--surface)}
@@ -119,32 +101,19 @@ button,select,input,textarea{font-family:inherit}
 .page-add-btn:active{background:var(--bg)}
 .page-cards{padding:6px;display:flex;flex-direction:column;gap:5px;min-height:60px}
 .page-cards.drag-over{outline:2px dashed var(--border2);outline-offset:-2px;border-radius:6px}
-.page-bg-op{background:var(--sec-op)!important}
-.page-bg-pp1{background:var(--sec-pp1)!important}
-.page-bg-mp{background:var(--sec-mp)!important}
-.page-bg-pp2{background:var(--sec-pp2)!important}
-.page-bg-ed{background:var(--sec-ed)!important}
-.page-bg-note{background:var(--sec-note)!important}
-
-/* Compact card */
+.page-bg-op{background:var(--sec-op)!important}.page-bg-pp1{background:var(--sec-pp1)!important}
+.page-bg-mp{background:var(--sec-mp)!important}.page-bg-pp2{background:var(--sec-pp2)!important}
+.page-bg-ed{background:var(--sec-ed)!important}.page-bg-note{background:var(--sec-note)!important}
 .card-compact{background:var(--surface);border:0.5px solid var(--border);border-radius:6px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;cursor:pointer;font-size:12px}
-.card-compact.tag-plot{border-left:3px solid var(--plot)}
-.card-compact.tag-hako{border-left:3px solid var(--hako)}
-.card-compact.tag-serif{border-left:3px solid var(--serif)}
-.card-compact.tag-name{border-left:3px solid var(--name)}
-.card-compact.tag-memo{border-left:3px solid var(--memo)}
-.card-compact.tag-note{border-left:3px solid var(--note)}
+.card-compact.tag-plot{border-left:3px solid var(--plot)}.card-compact.tag-hako{border-left:3px solid var(--hako)}
+.card-compact.tag-serif{border-left:3px solid var(--serif)}.card-compact.tag-name{border-left:3px solid var(--name)}
+.card-compact.tag-memo{border-left:3px solid var(--memo)}.card-compact.tag-note{border-left:3px solid var(--note)}
 .card-compact-tag{font-size:10px;font-weight:600}
-.tag-plot .card-compact-tag{color:var(--plot)}
-.tag-hako .card-compact-tag{color:var(--hako)}
-.tag-serif .card-compact-tag{color:var(--serif)}
-.tag-name .card-compact-tag{color:var(--name)}
-.tag-memo .card-compact-tag{color:var(--memo)}
-.tag-note .card-compact-tag{color:var(--note)}
+.tag-plot .card-compact-tag{color:var(--plot)}.tag-hako .card-compact-tag{color:var(--hako)}
+.tag-serif .card-compact-tag{color:var(--serif)}.tag-name .card-compact-tag{color:var(--name)}
+.tag-memo .card-compact-tag{color:var(--memo)}.tag-note .card-compact-tag{color:var(--note)}
 .card-compact-text{color:var(--text);line-height:1.4;white-space:pre-wrap;word-break:break-all}
 .card-compact-sketch{width:100%;height:auto;border-radius:4px;border:0.5px solid var(--border);display:block;background:#fff}
-
-/* Modals */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:12px}
 .modal{background:var(--surface);border-radius:var(--radius);padding:20px;width:100%;max-width:340px;border:0.5px solid var(--border)}
 .modal h3{font-size:16px;font-weight:500;margin-bottom:12px}
@@ -165,8 +134,6 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 .export-row button{flex:1;font-size:13px;padding:8px;min-width:80px}
 .tag-edit-select{font-size:11px;padding:2px 6px;border-radius:5px;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2)}
 .db-notice{font-size:11px;color:var(--text3);text-align:center;padding:2px 0 8px}
-
-/* Work management */
 .work-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .work-row{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;cursor:grab}
 .work-row:active{opacity:.8;cursor:grabbing}
@@ -185,25 +152,31 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 .work-row-btns{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
 .work-row-btn{font-size:11px;padding:4px 10px;border:0.5px solid var(--border);border-radius:5px;background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap}
 .work-row-btn:active{background:var(--bg)}
-.work-row-btn.del{color:#e24b4a;border-color:#f5b8b8}
-.work-row-btn.del:active{background:#fef0f0}
+.work-row-btn.del{color:#e24b4a;border-color:#f5b8b8}.work-row-btn.del:active{background:#fef0f0}
 .work-row-btn.open{background:var(--text);color:#fff;border-color:var(--text)}
 .work-add-row{display:flex;gap:8px;align-items:center}
 .work-add-row input{flex:1;font-size:14px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--surface);color:var(--text)}
+.padd-modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:360px;border:0.5px solid var(--border);overflow:hidden}
+.padd-header{padding:12px 14px;font-size:14px;font-weight:500;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.padd-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.padd-tags{display:flex;gap:5px;flex-wrap:wrap}
+.padd-ta{width:100%;font-size:15px;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);resize:none;outline:none;line-height:1.6;min-height:72px}
+.padd-btns{display:flex;gap:8px;padding:0 14px 14px}
+.padd-btns button{flex:1;padding:8px;font-size:13px}
 </style>
 </head>
 <body>
 <div class="app" id="app"><div class="db-notice" id="db-notice">読み込み中…</div></div>
 <script>
-const SECTIONS=['Note','OP','PP1','MP','PP2','ED'];
-const TAG_LABELS={plot:'プロット',hako:'箱書き',serif:'セリフ',memo:'メモ',name:'ネーム'};
-const TAG_COLORS={plot:'#185FA5',hako:'#2a8a4a',serif:'#e24b4a',memo:'#b07d10',name:'#1a1916'};
-const SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg-pp2',ED:'page-bg-ed',Note:'page-bg-note'};
-const PEN_SIZES=[2,4,8];
-const PEN_PALETTE=['#185FA5','#2a8a4a','#e24b4a','#b07d10','#1a1916','#7b3fb5','#888888','#ffffff'];
-const B4_RATIO=364/257;
+var SECTIONS=['Note','OP','PP1','MP','PP2','ED'];
+var TAG_LABELS={plot:'プロット',hako:'箱書き',serif:'セリフ',memo:'メモ',name:'ネーム'};
+var TAG_COLORS={plot:'#185FA5',hako:'#2a8a4a',serif:'#e24b4a',memo:'#b07d10',name:'#1a1916'};
+var SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg-pp2',ED:'page-bg-ed',Note:'page-bg-note'};
+var PEN_SIZES=[2,4,8];
+var PEN_PALETTE=['#185FA5','#2a8a4a','#e24b4a','#b07d10','#1a1916','#7b3fb5','#888888','#ffffff'];
+var B4_RATIO=364/257;
 
-let state={
+var state={
   works:[{id:1,name:'作品1',pageCount:16,logline:''}],
   activeWork:1,cards:[],nextId:1,
   newText:'',newTag:'plot',tab:'page',
@@ -211,560 +184,693 @@ let state={
   collapsedSections:{},sketchModal:null,
   editingCardId:null,editingText:'',editingTag:null,
   penColor:TAG_COLORS.plot,penSize:PEN_SIZES[1],
-  pageData:[],
-  newWorkNameMgr:'',
+  pageData:[],newWorkNameMgr:'',
   filterTags:{page:[],section:[]},
-  secLoglines:{},
-  secSortMode:{},
+  secLoglines:{},secSortMode:{},
+  pageAddModal:null
 };
 
-// ── IndexedDB ──
-let db=null;
+var db=null;
+
 function openDB(){
-  return new Promise((res,rej)=>{
-    const r=indexedDB.open('manga_plot_v5',1);
-    r.onupgradeneeded=e=>{const d=e.target.result;if(!d.objectStoreNames.contains('state'))d.createObjectStore('state');if(!d.objectStoreNames.contains('sketches'))d.createObjectStore('sketches');};
-    r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);
+  return new Promise(function(res,rej){
+    var r=indexedDB.open('manga_plot_v5',1);
+    r.onupgradeneeded=function(e){
+      var d=e.target.result;
+      if(!d.objectStoreNames.contains('state'))d.createObjectStore('state');
+      if(!d.objectStoreNames.contains('sketches'))d.createObjectStore('sketches');
+    };
+    r.onsuccess=function(e){res(e.target.result);};
+    r.onerror=function(e){rej(e.target.error);};
   });
 }
-function idbGet(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readonly');const r=tx.objectStore(store).get(key);r.onsuccess=e=>res(e.target.result);r.onerror=e=>rej(e.target.error);});}
-function idbPut(store,key,val){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).put(val,key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
-function idbDel(store,key){return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const r=tx.objectStore(store).delete(key);r.onsuccess=()=>res();r.onerror=e=>rej(e.target.error);});}
+function idbGet(store,key){
+  return new Promise(function(res,rej){
+    var tx=db.transaction(store,'readonly');
+    var r=tx.objectStore(store).get(key);
+    r.onsuccess=function(e){res(e.target.result);};
+    r.onerror=function(e){rej(e.target.error);};
+  });
+}
+function idbPut(store,key,val){
+  return new Promise(function(res,rej){
+    var tx=db.transaction(store,'readwrite');
+    var r=tx.objectStore(store).put(val,key);
+    r.onsuccess=function(){res();};
+    r.onerror=function(e){rej(e.target.error);};
+  });
+}
+function idbDel(store,key){
+  return new Promise(function(res,rej){
+    var tx=db.transaction(store,'readwrite');
+    var r=tx.objectStore(store).delete(key);
+    r.onsuccess=function(){res();};
+    r.onerror=function(e){rej(e.target.error);};
+  });
+}
 
-async function save(){
-  if(!db)return;
-  const slim=state.cards.map(c=>{const{sketch,...rest}=c;return rest;});
-  await idbPut('state','main',{
+function lsSave(data){try{localStorage.setItem('manga_v5',JSON.stringify(data));}catch(e){}}
+function lsLoad(){try{var s=localStorage.getItem('manga_v5');return s?JSON.parse(s):null;}catch(e){return null;}}
+
+function save(){
+  var slim=state.cards.map(function(c){
+    var r={};
+    for(var k in c){if(k!=='sketch')r[k]=c[k];}
+    return r;
+  });
+  var data={
     works:state.works,activeWork:state.activeWork,cards:slim,nextId:state.nextId,
-    tab:state.tab,pageData:state.pageData,
-    secLoglines:state.secLoglines,secSortMode:state.secSortMode,
-  });
-}
-async function saveSketchIDB(id,dataURL){if(db)await idbPut('sketches',id,dataURL);}
-async function delSketchIDB(id){if(db)await idbDel('sketches',id);}
-async function loadAll(){
-  const saved=await idbGet('state','main');
-  if(saved){
-    if(saved.works)saved.works=saved.works.map(w=>({logline:'',...w}));
-    state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null};
+    tab:state.tab,pageData:state.pageData,secLoglines:state.secLoglines,secSortMode:state.secSortMode
+  };
+  if(db){
+    try{idbPut('state','main',data);}catch(e){lsSave(data);}
+  } else {
+    lsSave(data);
   }
-  for(const c of state.cards){try{const sk=await idbGet('sketches',c.id);if(sk)c.sketch=sk;}catch(e){}}
 }
 
-// ── Helpers ──
-const getWork=()=>state.works.find(w=>w.id===state.activeWork);
-function getPageData(n){return state.pageData.find(p=>p.workId===state.activeWork&&p.pageNum===n)||{workId:state.activeWork,pageNum:n,section:''};}
+function saveSketchStorage(id,dataURL){
+  if(db){try{idbPut('sketches',id,dataURL);}catch(e){}}
+  try{localStorage.setItem('sk_'+id,dataURL);}catch(e){}
+}
+function delSketchStorage(id){
+  if(db){try{idbDel('sketches',id);}catch(e){}}
+  try{localStorage.removeItem('sk_'+id);}catch(e){}
+}
+
+function loadAll(){
+  return new Promise(function(resolve){
+    function applyData(saved){
+      if(saved){
+        if(saved.works)saved.works=saved.works.map(function(w){return Object.assign({logline:''},w);});
+        Object.assign(state,saved);
+        state.showModal=false;state.sketchModal=null;state.editingCardId=null;state.editingTag=null;state.pageAddModal=null;
+      }
+      if(!db){
+        state.cards.forEach(function(c){
+          try{var sk=localStorage.getItem('sk_'+c.id);if(sk)c.sketch=sk;}catch(e){}
+        });
+        resolve();
+        return;
+      }
+      var pending=state.cards.length;
+      if(!pending){resolve();return;}
+      state.cards.forEach(function(c){
+        idbGet('sketches',c.id).then(function(sk){
+          if(sk)c.sketch=sk;
+          else{try{var ls=localStorage.getItem('sk_'+c.id);if(ls)c.sketch=ls;}catch(e){}}
+          pending--;if(!pending)resolve();
+        }).catch(function(){
+          try{var ls=localStorage.getItem('sk_'+c.id);if(ls)c.sketch=ls;}catch(e){}
+          pending--;if(!pending)resolve();
+        });
+      });
+    }
+    if(db){
+      idbGet('state','main').then(applyData).catch(function(){applyData(lsLoad());});
+    } else {
+      applyData(lsLoad());
+    }
+  });
+}
+
+function getWork(){return state.works.find(function(w){return w.id===state.activeWork;});}
+function getPageData(n){return state.pageData.find(function(p){return p.workId===state.activeWork&&p.pageNum===n;})||{workId:state.activeWork,pageNum:n,section:''};}
+
 function setPageSection(n,sec){
-  const i=state.pageData.findIndex(p=>p.workId===state.activeWork&&p.pageNum===n);
+  var i=state.pageData.findIndex(function(p){return p.workId===state.activeWork&&p.pageNum===n;});
   if(i>=0)state.pageData[i].section=sec;else state.pageData.push({workId:state.activeWork,pageNum:n,section:sec});
-  const newSec=sec||'Note';
-  state.cards=state.cards.map(c=>(c.workId===state.activeWork&&c.pageNum===n)?{...c,section:newSec}:c);
+  var ns=sec||'Note';
+  state.cards=state.cards.map(function(c){
+    return(c.workId===state.activeWork&&c.pageNum===n)?Object.assign({},c,{section:ns}):c;
+  });
   save();render();
 }
-function getCardsForPage(n){return state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===n).sort((a,b)=>(a.op??0)-(b.op??0));}
+
+function getCardsForPage(n){
+  return state.cards.filter(function(c){return c.workId===state.activeWork&&c.pageNum===n;}).sort(function(a,b){return(a.op||0)-(b.op||0);});
+}
+
 function getCardsForSection(sec){
-  const key=`${state.activeWork}_${sec}`;
-  const mode=state.secSortMode[key]||'page';
-  const cards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
+  var mode=(state.secSortMode[state.activeWork+'_'+sec])||'page';
+  var cards=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section===sec;});
   if(mode==='page'){
-    return cards.sort((a,b)=>{
-      if(a.pageNum===0&&b.pageNum===0)return(a.os??0)-(b.os??0);
-      if(a.pageNum===0)return 1;if(b.pageNum===0)return -1;
+    return cards.sort(function(a,b){
+      if(a.pageNum===0&&b.pageNum===0)return(a.os||0)-(b.os||0);
+      if(a.pageNum===0)return 1;
+      if(b.pageNum===0)return -1;
       if(a.pageNum!==b.pageNum)return a.pageNum-b.pageNum;
-      return(a.op??0)-(b.op??0);
+      return(a.op||0)-(b.op||0);
     });
   }
-  return cards.sort((a,b)=>(a.os??0)-(b.os??0));
+  return cards.sort(function(a,b){return(a.os||0)-(b.os||0);});
 }
+
 function toggleFilterTag(view,tag){
-  const list=state.filterTags[view]||[];
-  state.filterTags[view]=list.includes(tag)?list.filter(t=>t!==tag):[...list,tag];
+  var list=state.filterTags[view]||[];
+  if(list.indexOf(tag)>=0){state.filterTags[view]=list.filter(function(t){return t!==tag;});}
+  else{state.filterTags[view]=list.concat([tag]);}
   render();
 }
 function matchesFilter(card,view){
-  const filters=state.filterTags[view]||[];
-  return !filters.length||filters.includes(card.tag);
+  var f=state.filterTags[view]||[];
+  return !f.length||f.indexOf(card.tag)>=0;
 }
-function getSortMode(sec){return(state.secSortMode[`${state.activeWork}_${sec}`])||'page';}
-function getSecLogline(sec){return state.secLoglines[`${state.activeWork}_${sec}`]||'';}
-function setSecLogline(sec,text){state.secLoglines[`${state.activeWork}_${sec}`]=text;save();}
-function getWorkLogline(){return getWork()?.logline||'';}
-function setWorkLogline(text){const w=getWork();if(w){w.logline=text;save();}}
+function getSortMode(sec){return(state.secSortMode[state.activeWork+'_'+sec])||'page';}
+function getSecLogline(sec){return state.secLoglines[state.activeWork+'_'+sec]||'';}
+function setSecLogline(sec,text){state.secLoglines[state.activeWork+'_'+sec]=text;save();}
+function getWorkLogline(){var w=getWork();return w?w.logline||''  :'';}
+function setWorkLogline(text){var w=getWork();if(w){w.logline=text;save();}}
+
+function maxVal(arr,fn){return arr.length?Math.max.apply(null,arr.map(fn)):0;}
 
 function moveCard(id,toSec){
-  const cards=getCardsForSection(toSec);const maxOs=cards.length?Math.max(...cards.map(c=>c.os??0))+1:0;
-  state.cards=state.cards.map(c=>c.id===id?{...c,section:toSec,os:maxOs}:c);save();render();
+  var cards=getCardsForSection(toSec);
+  var maxOs=maxVal(cards,function(c){return c.os||0;})+1;
+  state.cards=state.cards.map(function(c){return c.id===id?Object.assign({},c,{section:toSec,os:maxOs}):c;});
+  save();render();
 }
 function moveCardToPage(id,toPage){
   toPage=parseInt(toPage);
-  const cards=getCardsForPage(toPage);const maxOp=cards.length?Math.max(...cards.map(c=>c.op??0))+1:0;
-  const sec=toPage===0?'Note':(getPageData(toPage).section||'Note');
-  const secCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
-  const maxOs=secCards.length?Math.max(...secCards.map(c=>c.os??0))+1:0;
-  state.cards=state.cards.map(c=>c.id===id?{...c,pageNum:toPage,op:maxOp,section:sec,os:maxOs}:c);save();render();
+  var pc=getCardsForPage(toPage);var maxOp=maxVal(pc,function(c){return c.op||0;})+1;
+  var sec=toPage===0?'Note':(getPageData(toPage).section||'Note');
+  var sc=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section===sec;});
+  var maxOs=maxVal(sc,function(c){return c.os||0;})+1;
+  state.cards=state.cards.map(function(c){return c.id===id?Object.assign({},c,{pageNum:toPage,op:maxOp,section:sec,os:maxOs}):c;});
+  save();render();
 }
-function moveCardToWork(id,toWorkId){state.cards=state.cards.map(c=>c.id===id?{...c,workId:parseInt(toWorkId)}:c);save();render();}
-function deleteCard(id){if(!confirm('削除しますか？'))return;state.cards=state.cards.filter(c=>c.id!==id);delSketchIDB(id);save();render();}
-
+function moveCardToWork(id,toWorkId){
+  state.cards=state.cards.map(function(c){return c.id===id?Object.assign({},c,{workId:parseInt(toWorkId)}):c;});
+  save();render();
+}
+function deleteCard(id){
+  if(!confirm('削除しますか？'))return;
+  state.cards=state.cards.filter(function(c){return c.id!==id;});
+  delSketchStorage(id);save();render();
+}
 function addCard(){
-  const text=state.newText.trim();if(!text)return;
-  const noteCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section==='Note');
-  const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
-  state.cards.push({id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text,sketch:null,pageNum:0,os:maxOs,op:0});
+  var text=state.newText.trim();if(!text)return;
+  var nc=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section==='Note';});
+  var maxOs=maxVal(nc,function(c){return c.os||0;})+1;
+  state.cards.push({id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text:text,sketch:null,pageNum:0,os:maxOs,op:0});
   state.newText='';save();render();
 }
 function addCardToPage(pn){
-  const text=prompt(`${pn}pにカードを追加`);
-  if(!text||!text.trim())return;
-  const sec=getPageData(pn).section||'Note';
-  const pageCards=getCardsForPage(pn);const maxOp=pageCards.length?Math.max(...pageCards.map(c=>c.op??0))+1:0;
-  const secCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
-  const maxOs=secCards.length?Math.max(...secCards.map(c=>c.os??0))+1:0;
-  state.cards.push({id:state.nextId++,workId:state.activeWork,section:sec,tag:state.newTag,text:text.trim(),sketch:null,pageNum:pn,op:maxOp,os:maxOs});
-  save();render();
+  state.pageAddModal={pageNum:pn,text:'',tag:state.newTag};
+  render();
+  setTimeout(function(){var ta=document.getElementById('padd-ta');if(ta)ta.focus();},50);
 }
-function updatePageCount(n){const w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
+function commitCardToPage(){
+  var m=state.pageAddModal;if(!m)return;
+  var ta=document.getElementById('padd-ta');
+  var text=(ta?ta.value:m.text).trim();
+  if(!text){state.pageAddModal=null;render();return;}
+  var sec=getPageData(m.pageNum).section||'Note';
+  var pc=getCardsForPage(m.pageNum);var maxOp=maxVal(pc,function(c){return c.op||0;})+1;
+  var sc=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section===sec;});
+  var maxOs=maxVal(sc,function(c){return c.os||0;})+1;
+  state.cards.push({id:state.nextId++,workId:state.activeWork,section:sec,tag:m.tag,text:text,sketch:null,pageNum:m.pageNum,op:maxOp,os:maxOs});
+  state.pageAddModal=null;save();render();
+}
+function commitSketchToPage(){
+  var m=state.pageAddModal;if(!m)return;
+  state.pageAddModal=null;
+  var sec=getPageData(m.pageNum).section||'Note';
+  var pc=getCardsForPage(m.pageNum);var maxOp=maxVal(pc,function(c){return c.op||0;})+1;
+  var sc=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section===sec;});
+  var maxOs=maxVal(sc,function(c){return c.os||0;})+1;
+  var nc={id:state.nextId++,workId:state.activeWork,section:sec,tag:m.tag,text:'',sketch:null,pageNum:m.pageNum,op:maxOp,os:maxOs};
+  state.cards.push(nc);save();
+  openSketch(nc.id);
+}
+function updatePageCount(n){var w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
 
-// ── Work management ──
 function addWorkFromMgr(){
-  const name=state.newWorkNameMgr.trim();if(!name)return;
-  const id=Date.now();
-  state.works.push({id,name,pageCount:16,logline:''});
+  var name=state.newWorkNameMgr.trim();if(!name)return;
+  var id=Date.now();
+  state.works.push({id:id,name:name,pageCount:16,logline:''});
   state.newWorkNameMgr='';save();render();
 }
-function renameWork(id,name){if(!name.trim())return;state.works=state.works.map(w=>w.id===id?{...w,name:name.trim()}:w);}
-function setWorkPageCount(id,n){state.works=state.works.map(w=>w.id===id?{...w,pageCount:Math.max(1,Math.min(200,n))}:w);}
+function renameWork(id,name){
+  if(!name.trim())return;
+  state.works=state.works.map(function(w){return w.id===id?Object.assign({},w,{name:name.trim()}):w;});
+}
+function setWorkPageCount(id,n){
+  state.works=state.works.map(function(w){return w.id===id?Object.assign({},w,{pageCount:Math.max(1,Math.min(200,n))}):w;});
+}
 function deleteWork(id){
   if(state.works.length<=1){alert('最後の1作品は削除できません');return;}
-  const cardCount=state.cards.filter(c=>c.workId===id).length;
-  if(!confirm(`「${state.works.find(w=>w.id===id)?.name}」を削除しますか？\nカード${cardCount}枚もすべて削除されます。`))return;
-  state.cards.filter(c=>c.workId===id).forEach(c=>delSketchIDB(c.id));
-  state.cards=state.cards.filter(c=>c.workId!==id);
-  state.works=state.works.filter(w=>w.id!==id);
+  var wk=state.works.find(function(w){return w.id===id;});
+  var cc=state.cards.filter(function(c){return c.workId===id;}).length;
+  if(!confirm((wk?wk.name:'')+'を削除しますか？\nカード'+cc+'枚もすべて削除されます。'))return;
+  state.cards.filter(function(c){return c.workId===id;}).forEach(function(c){delSketchStorage(c.id);});
+  state.cards=state.cards.filter(function(c){return c.workId!==id;});
+  state.works=state.works.filter(function(w){return w.id!==id;});
   if(state.activeWork===id)state.activeWork=state.works[0].id;
   save();render();
 }
 function openWork(id){state.activeWork=id;state.tab='page';save();render();}
 
-let dragWorkId=null;
+var dragWorkId=null;
 function handleDragStartWork(id){dragWorkId=id;}
 function handleDropOnWork(e,targetId){
   e.preventDefault();
-  document.querySelectorAll('.work-row').forEach(el=>el.classList.remove('drag-over-work'));
+  document.querySelectorAll('.work-row').forEach(function(el){el.classList.remove('drag-over-work');});
   if(dragWorkId==null||dragWorkId===targetId)return;
-  const fi=state.works.findIndex(w=>w.id===dragWorkId);const ti=state.works.findIndex(w=>w.id===targetId);
+  var fi=state.works.findIndex(function(w){return w.id===dragWorkId;});
+  var ti=state.works.findIndex(function(w){return w.id===targetId;});
   if(fi<0||ti<0)return;
   state.works.splice(ti,0,state.works.splice(fi,1)[0]);
   dragWorkId=null;save();render();
 }
-function moveWorkUp(id){const i=state.works.findIndex(w=>w.id===id);if(i<=0)return;[state.works[i-1],state.works[i]]=[state.works[i],state.works[i-1]];save();render();}
-function moveWorkDown(id){const i=state.works.findIndex(w=>w.id===id);if(i<0||i>=state.works.length-1)return;[state.works[i],state.works[i+1]]=[state.works[i+1],state.works[i]];save();render();}
+function moveWorkUp(id){
+  var i=state.works.findIndex(function(w){return w.id===id;});
+  if(i<=0)return;var t=state.works[i-1];state.works[i-1]=state.works[i];state.works[i]=t;save();render();
+}
+function moveWorkDown(id){
+  var i=state.works.findIndex(function(w){return w.id===id;});
+  if(i<0||i>=state.works.length-1)return;var t=state.works[i];state.works[i]=state.works[i+1];state.works[i+1]=t;save();render();
+}
 
-// ── Drag card ──
-let dragId=null,dragCtx=null,dragCtxVal=null;
-function reorderInList(fromId,targetId,getList,orderKey,extraUpdates){
-  let list=[...getList()];const fi=list.findIndex(c=>c.id===fromId);const ti=list.findIndex(c=>c.id===targetId);
+var dragId=null,dragCtx=null,dragCtxVal=null;
+function reorderInList(fromId,targetId,getList,orderKey,extra){
+  var list=getList().slice();
+  var fi=list.findIndex(function(c){return c.id===fromId;});
+  var ti=list.findIndex(function(c){return c.id===targetId;});
   if(fi<0||ti<0)return false;
   list.splice(ti,0,list.splice(fi,1)[0]);
-  list.forEach((c,i)=>{state.cards=state.cards.map(sc=>sc.id===c.id?{...sc,[orderKey]:i,...(extraUpdates||{})}:sc);});
+  list.forEach(function(c,i){
+    state.cards=state.cards.map(function(sc){
+      if(sc.id!==c.id)return sc;
+      var u=Object.assign({},sc);u[orderKey]=i;
+      if(extra)Object.assign(u,extra);
+      return u;
+    });
+  });
   return true;
 }
 function handleDragStartCard(id,ctx,ctxVal){dragId=id;dragCtx=ctx;dragCtxVal=ctxVal;}
 function handleDropOnCard(e,targetId,ctx,ctxVal){
   e.preventDefault();e.stopPropagation();
-  document.querySelectorAll('.drag-over-card').forEach(el=>el.classList.remove('drag-over-card'));
+  document.querySelectorAll('.drag-over-card').forEach(function(el){el.classList.remove('drag-over-card');});
   if(dragId==null||dragId===targetId)return;
   if(ctx==='section'){
     if(getSortMode(ctxVal)==='page'){moveCard(dragId,ctxVal);}
-    else{const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
-  }else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
+    else{
+      var ok=reorderInList(dragId,targetId,function(){return getCardsForSection(ctxVal);},'os',{section:ctxVal});
+      if(!ok)moveCard(dragId,ctxVal);
+    }
+  } else {
+    var ok2=reorderInList(dragId,targetId,function(){return getCardsForPage(ctxVal);},'op',{pageNum:ctxVal});
+    if(!ok2)moveCardToPage(dragId,ctxVal);
+  }
   dragId=null;save();render();
 }
-function handleDropSection(e,sec){e.preventDefault();document.querySelectorAll('.cards-container').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCard(dragId,sec);dragId=null;}
-function handleDropPage(e,pn){e.preventDefault();document.querySelectorAll('.page-cards').forEach(el=>el.classList.remove('drag-over'));if(dragId==null)return;moveCardToPage(dragId,pn);dragId=null;}
+function handleDropSection(e,sec){
+  e.preventDefault();
+  document.querySelectorAll('.cards-container').forEach(function(el){el.classList.remove('drag-over');});
+  if(dragId==null)return;moveCard(dragId,sec);dragId=null;
+}
+function handleDropPage(e,pn){
+  e.preventDefault();
+  document.querySelectorAll('.page-cards').forEach(function(el){el.classList.remove('drag-over');});
+  if(dragId==null)return;moveCardToPage(dragId,pn);dragId=null;
+}
 
-// ── Edit ──
-function startEdit(id){const c=state.cards.find(c=>c.id===id);if(!c)return;state.editingCardId=id;state.editingText=c.text;state.editingTag=c.tag;render();setTimeout(()=>{const ta=document.getElementById(`eta-${id}`);if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}},30);}
+function startEdit(id){
+  var c=state.cards.find(function(c){return c.id===id;});if(!c)return;
+  state.editingCardId=id;state.editingText=c.text;state.editingTag=c.tag;
+  render();
+  setTimeout(function(){var ta=document.getElementById('eta-'+id);if(ta){ta.focus();ta.setSelectionRange(ta.value.length,ta.value.length);}},30);
+}
 function handleEditKey(e,id){state.editingText=e.target.value;if(e.key==='Escape')cancelEdit();}
 function setEditTag(tag){state.editingTag=tag;render();}
 function saveEdit(id){
-  const text=document.getElementById(`eta-${id}`)?.value??state.editingText;
-  const tag=state.editingTag||state.cards.find(c=>c.id===id)?.tag;
-  state.cards=state.cards.map(c=>c.id===id?{...c,text,tag}:c);
+  var ta=document.getElementById('eta-'+id);
+  var text=ta?ta.value:state.editingText;
+  var c=state.cards.find(function(c){return c.id===id;});
+  var tag=state.editingTag||(c?c.tag:'plot');
+  state.cards=state.cards.map(function(c){return c.id===id?Object.assign({},c,{text:text,tag:tag}):c;});
   state.editingCardId=null;state.editingText='';state.editingTag=null;save();render();
 }
 function cancelEdit(){state.editingCardId=null;state.editingText='';state.editingTag=null;render();}
 
-// ── Sketch ──
-let skCanvas=null,skCtx=null,skOff=null,skOffCtx=null,drawing=false;
-function drawImageContain(ctx,img,maxW,maxH){
-  const scale=Math.min(maxW/img.width,maxH/img.height);
-  const w=img.width*scale,h=img.height*scale;
-  ctx.drawImage(img,(maxW-w)/2,(maxH-h)/2,w,h);
+var skCanvas=null,skCtx=null,skOff=null,skOffCtx=null,drawing=false;
+function drawImageContain(ctx,img,W,H){
+  var s=Math.min(W/img.width,H/img.height);ctx.drawImage(img,(W-img.width*s)/2,(H-img.height*s)/2,img.width*s,img.height*s);
 }
 function initCanvas(){
   skCanvas=document.getElementById('sketch-canvas');if(!skCanvas)return;
-  const W=skCanvas.parentElement.clientWidth||460;
+  var W=skCanvas.parentElement.clientWidth||460;
   skCanvas.width=W;skCanvas.height=Math.round(W*B4_RATIO);skCanvas.style.height=skCanvas.height+'px';
   skCtx=skCanvas.getContext('2d');
   skOff=document.createElement('canvas');skOff.width=skCanvas.width;skOff.height=skCanvas.height;
   skOffCtx=skOff.getContext('2d');skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);
   skOffCtx.lineCap='round';skOffCtx.lineJoin='round';
-  if(state.sketchModal?.cardId!=null){
-    const c=state.cards.find(c=>c.id===state.sketchModal.cardId);
-    if(c?.sketch){const img=new Image();img.onload=()=>{drawImageContain(skOffCtx,img,skOff.width,skOff.height);flush();};img.src=c.sketch;}
+  var cid=state.sketchModal?state.sketchModal.cardId:null;
+  if(cid!=null){
+    var c=state.cards.find(function(c){return c.id===cid;});
+    if(c&&c.sketch){var img=new Image();img.onload=function(){drawImageContain(skOffCtx,img,skOff.width,skOff.height);flush();};img.src=c.sketch;}
     else flush();
-  }else flush();
+  } else flush();
   attachPen();
 }
 function flush(){if(!skCtx||!skOff)return;skCtx.clearRect(0,0,skCanvas.width,skCanvas.height);skCtx.drawImage(skOff,0,0);}
-function getPos(e){const r=skCanvas.getBoundingClientRect();const sx=skCanvas.width/r.width,sy=skCanvas.height/r.height;return{x:(e.clientX-r.left)*sx,y:(e.clientY-r.top)*sy};}
+function getPos(e){var r=skCanvas.getBoundingClientRect();return{x:(e.clientX-r.left)*skCanvas.width/r.width,y:(e.clientY-r.top)*skCanvas.height/r.height};}
 function attachPen(){
   if(!skCanvas)return;
-  let last=null;
-  skCanvas.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&e.width>30)return;e.preventDefault();drawing=true;last=getPos(e);skOffCtx.beginPath();skOffCtx.moveTo(last.x,last.y);},{passive:false});
-  skCanvas.addEventListener('pointermove',e=>{
+  var last=null;
+  skCanvas.addEventListener('pointerdown',function(e){
+    if(e.pointerType==='touch'&&e.width>30)return;
+    e.preventDefault();drawing=true;last=getPos(e);skOffCtx.beginPath();skOffCtx.moveTo(last.x,last.y);
+  },{passive:false});
+  skCanvas.addEventListener('pointermove',function(e){
     if(!drawing||(e.pointerType==='touch'&&e.width>30))return;e.preventDefault();
-    const p=getPos(e),pr=Math.max(0.1,e.pressure||0.5);
+    var p=getPos(e),pr=Math.max(0.1,e.pressure||0.5);
     skOffCtx.lineWidth=state.penSize*pr*1.5+state.penSize*0.5;skOffCtx.strokeStyle=state.penColor;
     skOffCtx.lineTo(p.x,p.y);skOffCtx.stroke();skOffCtx.beginPath();skOffCtx.moveTo(p.x,p.y);
     last=p;flush();
   },{passive:false});
-  const stop=()=>{drawing=false;last=null;if(skOffCtx)skOffCtx.beginPath();};
+  var stop=function(){drawing=false;last=null;if(skOffCtx)skOffCtx.beginPath();};
   skCanvas.addEventListener('pointerup',stop);skCanvas.addEventListener('pointercancel',stop);skCanvas.addEventListener('pointerleave',stop);
 }
 function clearSketch(){if(!skOffCtx)return;skOffCtx.clearRect(0,0,skOff.width,skOff.height);skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);flush();}
-async function saveSketch(cardId){
+function saveSketch(cardId){
   if(!skOff)return;
-  const dataURL=skOff.toDataURL('image/jpeg',0.75);
+  var dataURL=skOff.toDataURL('image/jpeg',0.75);
   if(cardId==null){
-    const noteCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section==='Note');
-    const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
-    const nc={id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text:'',sketch:dataURL,pageNum:0,os:maxOs,op:0};
-    state.cards.push(nc);await saveSketchIDB(nc.id,dataURL);
-  }else{
-    state.cards=state.cards.map(c=>c.id===cardId?{...c,sketch:dataURL}:c);
-    await saveSketchIDB(cardId,dataURL);
+    var nc2=state.cards.filter(function(c){return c.workId===state.activeWork&&c.section==='Note';});
+    var maxOs=maxVal(nc2,function(c){return c.os||0;})+1;
+    var nc={id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text:'',sketch:dataURL,pageNum:0,os:maxOs,op:0};
+    state.cards.push(nc);saveSketchStorage(nc.id,dataURL);
+  } else {
+    state.cards=state.cards.map(function(c){return c.id===cardId?Object.assign({},c,{sketch:dataURL}):c;});
+    saveSketchStorage(cardId,dataURL);
   }
   save();state.sketchModal=null;render();
 }
-async function removeSketch(id){state.cards=state.cards.map(c=>c.id===id?{...c,sketch:null}:c);await delSketchIDB(id);save();render();}
-function openSketch(cardId){state.sketchModal={cardId};render();}
+function removeSketch(id){
+  state.cards=state.cards.map(function(c){return c.id===id?Object.assign({},c,{sketch:null}):c;});
+  delSketchStorage(id);save();render();
+}
+function openSketch(cardId){state.sketchModal={cardId:cardId};render();}
 function openSketchNew(){state.sketchModal={cardId:null};render();}
 
-// ── Export / Backup ──
 function exportText(){
-  const w=getWork();let out=`【${w?.name||'作品'}】\n`;
-  if(w?.logline)out+=`${w.logline}\n`;out+='\n';
-  for(const sec of SECTIONS){
-    const ll=getSecLogline(sec);const cards=getCardsForSection(sec);if(!cards.length&&!ll)continue;
-    out+=`■ ${sec}`;if(ll)out+=` — ${ll}`;out+='\n';
-    for(const c of cards)out+=`[${TAG_LABELS[c.tag]}]${c.text?' '+c.text:''}${c.sketch?' [図あり]':''}\n`;
+  var w=getWork();var out='【'+(w?w.name:'作品')+'】\n';
+  if(w&&w.logline)out+=w.logline+'\n';out+='\n';
+  SECTIONS.forEach(function(sec){
+    var ll=getSecLogline(sec);var cards=getCardsForSection(sec);
+    if(!cards.length&&!ll)return;
+    out+='■ '+sec;if(ll)out+=' — '+ll;out+='\n';
+    cards.forEach(function(c){out+='['+(TAG_LABELS[c.tag]||c.tag)+']'+(c.text?' '+c.text:'')+(c.sketch?' [図あり]':'')+'\n';});
     out+='\n';
-  }
-  const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(out);a.download=`${w?.name||'manga'}_plot.txt`;a.click();
+  });
+  var a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(out);a.download=(w?w.name:'manga')+'_plot.txt';a.click();
 }
 function exportBackup(){
-  const data=JSON.stringify({works:state.works,activeWork:state.activeWork,cards:state.cards,nextId:state.nextId,pageData:state.pageData,secLoglines:state.secLoglines,secSortMode:state.secSortMode});
-  const a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);a.download=`manga_plot_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  var data=JSON.stringify({works:state.works,activeWork:state.activeWork,cards:state.cards,nextId:state.nextId,pageData:state.pageData,secLoglines:state.secLoglines,secSortMode:state.secSortMode});
+  var a=document.createElement('a');a.href='data:application/json;charset=utf-8,'+encodeURIComponent(data);a.download='manga_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
 }
 function importBackup(){
-  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
-  inp.onchange=async e=>{
-    const file=e.target.files[0];if(!file)return;
-    try{
-      const data=JSON.parse(await file.text());
-      if(data.works)data.works=data.works.map(w=>({logline:'',...w}));
-      state={...state,...data,showModal:false,sketchModal:null,editingCardId:null};
-      for(const c of state.cards){if(c.sketch)await saveSketchIDB(c.id,c.sketch);}
-      await save();render();
-    }catch(ex){alert('インポート失敗: '+ex.message);}
+  var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=function(e){
+    var file=e.target.files[0];if(!file)return;
+    var fr=new FileReader();
+    fr.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        if(data.works)data.works=data.works.map(function(w){return Object.assign({logline:''},w);});
+        Object.assign(state,data,{showModal:false,sketchModal:null,editingCardId:null,pageAddModal:null});
+        state.cards.forEach(function(c){if(c.sketch)saveSketchStorage(c.id,c.sketch);});
+        save();render();
+      }catch(ex){alert('インポート失敗: '+ex.message);}
+    };
+    fr.readAsText(file);
   };inp.click();
 }
 
-// ── Render helpers ──
-function tagSelectEdit(currentTag){
-  return `<select class="tag-edit-select" onchange="setEditTag(this.value)">${Object.entries(TAG_LABELS).map(([k,v])=>`<option value="${k}"${k===currentTag?' selected':''}>${v}</option>`).join('')}</select>`;
+function tagSelectEdit(cur){
+  var opts=Object.keys(TAG_LABELS).map(function(k){return '<option value="'+k+'"'+(k===cur?' selected':'')+'>'+TAG_LABELS[k]+'</option>';}).join('');
+  return '<select class="tag-edit-select" onchange="setEditTag(this.value)">'+opts+'</select>';
 }
-function cardFooterHTML(c,secMoveOpts){
-  const workOpts=state.works.filter(w=>w.id!==c.workId).map(w=>`<option value="${w.id}">${w.name}</option>`).join('');
-  return `<div class="card-footer">
-    <select class="card-move-select" onchange="moveCard(${c.id},this.value);this.value=''">
-      <option value="" disabled selected>Sec移動…</option>
-      ${secMoveOpts.map(s=>`<option value="${s}">${s}</option>`).join('')}
-    </select>
-    ${workOpts?`<select class="card-move-select" onchange="moveCardToWork(${c.id},this.value);this.value=''"><option value="" disabled selected>作品移動…</option>${workOpts}</select>`:''}
-    <div class="card-btns">
-      <button class="card-btn" onclick="startEdit(${c.id})">編集</button>
-      <button class="card-btn" onclick="openSketch(${c.id})">${c.sketch?'図編集':'図追加'}</button>
-      ${c.sketch?`<button class="card-btn" onclick="removeSketch(${c.id})">図削除</button>`:''}
-      <button class="card-btn" onclick="deleteCard(${c.id})">削除</button>
-    </div>
-  </div>`;
+function cardFooterHTML(c,secOpts){
+  var wOpts=state.works.filter(function(w){return w.id!==c.workId;}).map(function(w){return '<option value="'+w.id+'">'+w.name+'</option>';}).join('');
+  return '<div class="card-footer">'
+    +'<select class="card-move-select" onchange="moveCard('+c.id+',this.value);this.value=\'\'">'
+    +'<option value="" disabled selected>Sec移動…</option>'
+    +secOpts.map(function(s){return '<option value="'+s+'">'+s+'</option>';}).join('')+'</select>'
+    +(wOpts?'<select class="card-move-select" onchange="moveCardToWork('+c.id+',this.value);this.value=\'\'"><option value="" disabled selected>作品移動…</option>'+wOpts+'</select>':'')
+    +'<div class="card-btns">'
+    +'<button class="card-btn" onclick="startEdit('+c.id+')">編集</button>'
+    +'<button class="card-btn" onclick="openSketch('+c.id+')">'+(c.sketch?'図編集':'図追加')+'</button>'
+    +(c.sketch?'<button class="card-btn" onclick="removeSketch('+c.id+')">図削除</button>':'')
+    +'<button class="card-btn" onclick="deleteCard('+c.id+')">削除</button>'
+    +'</div></div>';
 }
-function fullCardHTML(c,secMoveOpts,ctx,ctxVal){
-  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
-  const work=getWork();const pc=work?work.pageCount:16;
-  const pageSelectOpts=`<option value="0"${c.pageNum===0?' selected':''}>未定</option>`
-    +Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}"${c.pageNum===n?' selected':''}>${n}p</option>`).join('');
-  return `<div class="card tag-${tag}" id="card-${c.id}"
-    draggable="${!editing}"
-    ondragstart="handleDragStartCard(${c.id},'${ctx}','${ctxVal}')"
-    ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over-card')"
-    ondragleave="this.classList.remove('drag-over-card')"
-    ondrop="handleDropOnCard(event,${c.id},'${ctx}','${ctxVal}')">
-    <div class="card-top">
-      <span class="card-tag-badge">${TAG_LABELS[tag]}</span>
-      <select class="card-page-select" onclick="event.stopPropagation()" onchange="moveCardToPage(${c.id},this.value)">${pageSelectOpts}</select>
-      ${editing?tagSelectEdit(tag):''}
-    </div>
-    ${editing
-      ?`<textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
-        <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>`
-      :`${c.text?`<div class="card-text">${c.text.replace(/</g,'&lt;')}</div>`:''}
-        ${c.sketch?`<img class="card-sketch-thumb" src="${c.sketch}" onclick="openSketch(${c.id})" alt="スケッチ">`:''}
-        ${cardFooterHTML(c,secMoveOpts)}`
-    }
-  </div>`;
+function fullCardHTML(c,secOpts,ctx,ctxVal){
+  var editing=state.editingCardId===c.id;var tag=editing?(state.editingTag||c.tag):c.tag;
+  var w=getWork();var pc=w?w.pageCount:16;
+  var pOpts='<option value="0"'+(c.pageNum===0?' selected':'')+'>未定</option>';
+  for(var n=1;n<=pc;n++)pOpts+='<option value="'+n+'"'+(c.pageNum===n?' selected':'')+'>'+n+'p</option>';
+  return '<div class="card tag-'+tag+'" id="card-'+c.id+'" draggable="'+(editing?'false':'true')+'"'
+    +' ondragstart="handleDragStartCard('+c.id+',\''+ctx+'\',\''+ctxVal+'\')"'
+    +' ondragover="event.preventDefault();event.stopPropagation();this.classList.add(\'drag-over-card\')"'
+    +' ondragleave="this.classList.remove(\'drag-over-card\')"'
+    +' ondrop="handleDropOnCard(event,'+c.id+',\''+ctx+'\',\''+ctxVal+'\')">'
+    +'<div class="card-top">'
+    +'<span class="card-tag-badge">'+TAG_LABELS[tag]+'</span>'
+    +'<select class="card-page-select" onclick="event.stopPropagation()" onchange="moveCardToPage('+c.id+',this.value)">'+pOpts+'</select>'
+    +(editing?tagSelectEdit(tag):'')+'</div>'
+    +(editing
+      ?'<textarea class="card-edit-area" id="eta-'+c.id+'" onkeydown="handleEditKey(event,'+c.id+')">'+state.editingText.replace(/</g,'&lt;')+'</textarea>'
+       +'<div class="card-btns"><button class="card-btn save" onclick="saveEdit('+c.id+')">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>'
+      :(c.text?'<div class="card-text">'+c.text.replace(/</g,'&lt;')+'</div>':'')
+       +(c.sketch?'<img class="card-sketch-thumb" src="'+c.sketch+'" onclick="openSketch('+c.id+')" alt="スケッチ">':'')
+       +cardFooterHTML(c,secOpts))
+    +'</div>';
 }
-function compactCardHTML(c,pageMoveOpts,pn){
-  const editing=state.editingCardId===c.id;const tag=editing?(state.editingTag||c.tag):c.tag;
-  if(editing){return `<div class="card tag-${tag}" id="card-${c.id}" style="font-size:13px">
-    <div class="card-top"><span class="card-tag-badge">${TAG_LABELS[tag]}</span>${tagSelectEdit(tag)}</div>
-    <textarea class="card-edit-area" id="eta-${c.id}" onkeydown="handleEditKey(event,${c.id})">${state.editingText.replace(/</g,'&lt;')}</textarea>
-    <div class="card-btns"><button class="card-btn save" onclick="saveEdit(${c.id})">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>
-  </div>`;}
-  return `<div class="card-compact tag-${tag}" id="card-${c.id}"
-    draggable="true"
-    ondragstart="handleDragStartCard(${c.id},'page',${pn})"
-    ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over-card')"
-    ondragleave="this.classList.remove('drag-over-card')"
-    ondrop="handleDropOnCard(event,${c.id},'page',${pn})"
-    onclick="startEdit(${c.id})">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px">
-      <span class="card-compact-tag">${TAG_LABELS[tag]}</span>
-      <div style="display:flex;gap:3px" onclick="event.stopPropagation()">
-        <select style="font-size:10px;padding:1px 3px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text2)" onchange="moveCardToPage(${c.id},parseInt(this.value));this.value=''">
-          <option value="" disabled selected>↕p</option>${pageMoveOpts}
-        </select>
-        <button class="card-btn" style="font-size:10px;padding:2px 5px" onclick="deleteCard(${c.id})">×</button>
-      </div>
-    </div>
-    ${c.text?`<div class="card-compact-text">${c.text.replace(/</g,'&lt;')}</div>`:''}
-    ${c.sketch?`<img class="card-compact-sketch" src="${c.sketch}" alt="">`:''}
-  </div>`;
+function compactCardHTML(c,mOpts,pn){
+  var editing=state.editingCardId===c.id;var tag=editing?(state.editingTag||c.tag):c.tag;
+  if(editing){
+    return '<div class="card tag-'+tag+'" id="card-'+c.id+'" style="font-size:13px">'
+      +'<div class="card-top"><span class="card-tag-badge">'+TAG_LABELS[tag]+'</span>'+tagSelectEdit(tag)+'</div>'
+      +'<textarea class="card-edit-area" id="eta-'+c.id+'" onkeydown="handleEditKey(event,'+c.id+')">'+state.editingText.replace(/</g,'&lt;')+'</textarea>'
+      +'<div class="card-btns"><button class="card-btn save" onclick="saveEdit('+c.id+')">保存</button><button class="card-btn" onclick="cancelEdit()">キャンセル</button></div>'
+      +'</div>';
+  }
+  return '<div class="card-compact tag-'+tag+'" id="card-'+c.id+'" draggable="true"'
+    +' ondragstart="handleDragStartCard('+c.id+',\'page\','+pn+')"'
+    +' ondragover="event.preventDefault();event.stopPropagation();this.classList.add(\'drag-over-card\')"'
+    +' ondragleave="this.classList.remove(\'drag-over-card\')"'
+    +' ondrop="handleDropOnCard(event,'+c.id+',\'page\','+pn+')"'
+    +' onclick="startEdit('+c.id+')">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;gap:4px">'
+    +'<span class="card-compact-tag">'+TAG_LABELS[tag]+'</span>'
+    +'<div style="display:flex;gap:3px" onclick="event.stopPropagation()">'
+    +'<select style="font-size:10px;padding:1px 3px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text2)" onchange="moveCardToPage('+c.id+',parseInt(this.value));this.value=\'\'">'
+    +'<option value="" disabled selected>&#x21D5;p</option>'+mOpts+'</select>'
+    +'<button class="card-btn" style="font-size:10px;padding:2px 5px" onclick="deleteCard('+c.id+')">&#xD7;</button>'
+    +'</div></div>'
+    +(c.text?'<div class="card-compact-text">'+c.text.replace(/</g,'&lt;')+'</div>':'')
+    +(c.sketch?'<img class="card-compact-sketch" src="'+c.sketch+'" onclick="event.stopPropagation();openSketch('+c.id+')" alt="">':'')
+    +'</div>';
 }
 
-// ── Work management screen ──
 function workManagementHTML(){
-  const rows=state.works.map((w,i)=>{
-    const cardCount=state.cards.filter(c=>c.workId===w.id).length;
-    const isActive=w.id===state.activeWork;
-    return `<div class="work-row" id="wrow-${w.id}"
-      draggable="true"
-      ondragstart="handleDragStartWork(${w.id})"
-      ondragover="event.preventDefault();document.getElementById('wrow-${w.id}').classList.add('drag-over-work')"
-      ondragleave="document.getElementById('wrow-${w.id}').classList.remove('drag-over-work')"
-      ondrop="handleDropOnWork(event,${w.id})"
-      style="${isActive?'border-color:var(--border2);box-shadow:inset 3px 0 0 var(--text)':''}">
-      <span class="work-row-drag-handle">⠿</span>
-      <div class="work-row-body">
-        <input class="work-name-input" type="text" value="${w.name.replace(/"/g,'&quot;')}"
-          onchange="renameWork(${w.id},this.value)" onblur="renameWork(${w.id},this.value);save()">
-        <textarea class="work-logline-input" rows="2" placeholder="ログライン…"
-          onblur="state.works=state.works.map(wk=>wk.id===${w.id}?{...wk,logline:this.value}:wk);save()"
-        >${(w.logline||'').replace(/</g,'&lt;')}</textarea>
-        <div class="work-row-meta">
-          <label>ページ数</label>
-          <input type="number" min="1" max="200" value="${w.pageCount}"
-            onchange="setWorkPageCount(${w.id},parseInt(this.value)||1);save()">
-          <span class="work-card-count">カード ${cardCount}枚</span>
-        </div>
-      </div>
-      <div class="work-row-btns">
-        <button class="work-row-btn open" onclick="openWork(${w.id})">開く</button>
-        <div style="display:flex;gap:4px">
-          <button class="work-row-btn" onclick="moveWorkUp(${w.id})" ${i===0?'disabled style="opacity:.3"':''}>↑</button>
-          <button class="work-row-btn" onclick="moveWorkDown(${w.id})" ${i===state.works.length-1?'disabled style="opacity:.3"':''}>↓</button>
-        </div>
-        <button class="work-row-btn del" onclick="deleteWork(${w.id})">削除</button>
-      </div>
-    </div>`;
+  var rows=state.works.map(function(w,i){
+    var cc=state.cards.filter(function(c){return c.workId===w.id;}).length;
+    var isA=w.id===state.activeWork;
+    return '<div class="work-row" id="wrow-'+w.id+'" draggable="true"'
+      +' ondragstart="handleDragStartWork('+w.id+')"'
+      +' ondragover="event.preventDefault();document.getElementById(\'wrow-'+w.id+'\').classList.add(\'drag-over-work\')"'
+      +' ondragleave="document.getElementById(\'wrow-'+w.id+'\').classList.remove(\'drag-over-work\')"'
+      +' ondrop="handleDropOnWork(event,'+w.id+')"'
+      +' style="'+(isA?'border-color:var(--border2);box-shadow:inset 3px 0 0 var(--text)':'')+'">'
+      +'<span class="work-row-drag-handle">&#x2837;</span>'
+      +'<div class="work-row-body">'
+      +'<input class="work-name-input" type="text" value="'+w.name.replace(/"/g,'&quot;')+'"'
+      +' onchange="renameWork('+w.id+',this.value)" onblur="renameWork('+w.id+',this.value);save()">'
+      +'<textarea class="work-logline-input" rows="2" placeholder="ログライン…"'
+      +' onblur="(function(el){state.works=state.works.map(function(wk){return wk.id==='+w.id+'?Object.assign({},wk,{logline:el.value}):wk;});save();})(this)">'+(w.logline||'').replace(/</g,'&lt;')+'</textarea>'
+      +'<div class="work-row-meta"><label>ページ数</label>'
+      +'<input type="number" min="1" max="200" value="'+w.pageCount+'" onchange="setWorkPageCount('+w.id+',parseInt(this.value)||1);save()">'
+      +'<span class="work-card-count">カード '+cc+'枚</span></div></div>'
+      +'<div class="work-row-btns">'
+      +'<button class="work-row-btn open" onclick="openWork('+w.id+')">開く</button>'
+      +'<div style="display:flex;gap:4px">'
+      +'<button class="work-row-btn" onclick="moveWorkUp('+w.id+')" '+(i===0?'disabled style="opacity:.3"':'')+'>&#x2191;</button>'
+      +'<button class="work-row-btn" onclick="moveWorkDown('+w.id+')" '+(i===state.works.length-1?'disabled style="opacity:.3"':'')+'>&#x2193;</button>'
+      +'</div>'
+      +'<button class="work-row-btn del" onclick="deleteWork('+w.id+')">削除</button>'
+      +'</div></div>';
   }).join('');
-  return `<div class="work-list">${rows}</div>
-    <div class="work-add-row">
-      <input type="text" placeholder="新しい作品名…" value="${state.newWorkNameMgr.replace(/"/g,'&quot;')}"
-        id="wmgr-input" oninput="state.newWorkNameMgr=this.value" onkeydown="if(event.key==='Enter')addWorkFromMgr()">
-      <button class="btn btn-primary" onclick="addWorkFromMgr()">追加</button>
-    </div>`;
+  return '<div class="work-list">'+rows+'</div>'
+    +'<div class="work-add-row">'
+    +'<input type="text" placeholder="新しい作品名…" value="'+state.newWorkNameMgr.replace(/"/g,'&quot;')+'"'
+    +' id="wmgr-input" oninput="state.newWorkNameMgr=this.value" onkeydown="if(event.key===\'Enter\')addWorkFromMgr()">'
+    +'<button class="btn btn-primary" onclick="addWorkFromMgr()">追加</button></div>';
 }
 
-// ── Render ──
 function render(){
-  const app=document.getElementById('app');
-  const work=getWork();
-  const workOpts=state.works.map(w=>`<option value="${w.id}"${w.id===state.activeWork?' selected':''}>${w.name}</option>`).join('');
-  const tagPills=Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${state.newTag===k?' active':''}" onclick="state.newTag='${k}';state.penColor='${TAG_COLORS[k]}';render()">${v}</span>`).join('');
-  const filterPills=view=>Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${(state.filterTags[view]||[]).includes(k)?' active':''}" onclick="toggleFilterTag('${view}','${k}')">${v}</span>`).join('');
+  var app=document.getElementById('app');
+  var w=getWork();
+  var wOpts=state.works.map(function(wk){return '<option value="'+wk.id+'"'+(wk.id===state.activeWork?' selected':'')+'>'+wk.name+'</option>';}).join('');
+  var tagPills=Object.keys(TAG_LABELS).map(function(k){return '<span class="pill pill-'+k+(state.newTag===k?' active':'')+'" onclick="state.newTag=\''+k+'\';state.penColor=\''+TAG_COLORS[k]+'\';render()">'+TAG_LABELS[k]+'</span>';}).join('');
+  function filterPills(view){
+    return Object.keys(TAG_LABELS).map(function(k){
+      var active=(state.filterTags[view]||[]).indexOf(k)>=0;
+      return '<span class="pill pill-'+k+(active?' active':'')+'" onclick="toggleFilterTag(\''+view+'\',\''+k+'\')">'+TAG_LABELS[k]+'</span>';
+    }).join('');
+  }
 
-  // Section board
-  const sectionBoardHTML=SECTIONS.map(sec=>{
-    const cards=getCardsForSection(sec).filter(c=>matchesFilter(c,'section'));
-    const collapsed=state.collapsedSections[sec];
-    const secOpts=SECTIONS.filter(s=>s!==sec);
-    const ll=getSecLogline(sec);
-    const inner=collapsed?'':`<div class="cards-container" id="dsc-${sec}"
-      ondragover="event.preventDefault();document.getElementById('dsc-${sec}').classList.add('drag-over')"
-      ondragleave="document.getElementById('dsc-${sec}').classList.remove('drag-over')"
-      ondrop="handleDropSection(event,'${sec}')">
-      ${cards.length?cards.map(c=>fullCardHTML(c,secOpts,'section',sec)).join(''):`<div class="empty-msg">カードなし</div>`}
-    </div>`;
-    return `<div class="section-block">
-      <div class="section-header sec-${sec.toLowerCase()}" onclick="state.collapsedSections['${sec}']=!state.collapsedSections['${sec}'];render()">
-        <span class="sec-title">${sec}</span>
-        <span class="sec-count">${cards.length}枚</span>
-        <span class="sec-chevron">${collapsed?'▶':'▼'}</span>
-        <textarea class="sec-logline" rows="1" placeholder="ログライン…"
-          onclick="event.stopPropagation()"
-          onblur="setSecLogline('${sec}',this.value)"
-        >${ll.replace(/</g,'&lt;')}</textarea>
-      </div>
-      ${inner}
-    </div>`;
+  var secBoard=SECTIONS.map(function(sec){
+    var cards=getCardsForSection(sec).filter(function(c){return matchesFilter(c,'section');});
+    var collapsed=state.collapsedSections[sec];
+    var sOpts=SECTIONS.filter(function(s){return s!==sec;});
+    var ll=getSecLogline(sec);
+    var inner=collapsed?'':'<div class="cards-container" id="dsc-'+sec+'"'
+      +' ondragover="event.preventDefault();document.getElementById(\'dsc-'+sec+'\').classList.add(\'drag-over\')"'
+      +' ondragleave="document.getElementById(\'dsc-'+sec+'\').classList.remove(\'drag-over\')"'
+      +' ondrop="handleDropSection(event,\''+sec+'\')">'
+      +(cards.length?cards.map(function(c){return fullCardHTML(c,sOpts,'section',sec);}).join(''):'<div class="empty-msg">カードなし</div>')
+      +'</div>';
+    return '<div class="section-block">'
+      +'<div class="section-header sec-'+sec.toLowerCase()+'" onclick="state.collapsedSections[\''+sec+'\']=!state.collapsedSections[\''+sec+'\'];render()">'
+      +'<span class="sec-title">'+sec+'</span>'
+      +'<span class="sec-count">'+cards.length+'枚</span>'
+      +'<span class="sec-chevron">'+(collapsed?'&#x25B6;':'&#x25BC;')+'</span>'
+      +'<textarea class="sec-logline" rows="1" placeholder="ログライン…" onclick="event.stopPropagation()" onblur="setSecLogline(\''+sec+'\',this.value)">'+ll.replace(/</g,'&lt;')+'</textarea>'
+      +'</div>'+inner+'</div>';
   }).join('');
 
-  // Page spread
-  const pc=work?work.pageCount:16;
-  const spreads=[['tbd',1]];
-  for(let i=2;i<=pc;i+=2)spreads.push([i,i+1<=pc?i+1:null]);
-  const tbdCards=state.cards.filter(c=>c.workId===state.activeWork&&c.pageNum===0&&matchesFilter(c,'page')).sort((a,b)=>(a.op??0)-(b.op??0));
+  var pc=w?w.pageCount:16;
+  var spreads=[['tbd',1]];
+  for(var i=2;i<=pc;i+=2)spreads.push([i,i+1<=pc?i+1:null]);
+  var tbdCards=state.cards.filter(function(c){return c.workId===state.activeWork&&c.pageNum===0&&matchesFilter(c,'page');}).sort(function(a,b){return(a.op||0)-(b.op||0);});
 
-  function tbdColHTML(){
-    const moveOpts=Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}">${n}p</option>`).join('');
-    return `<div class="page-col">
-      <div class="page-col-header" style="background:var(--bg)">
-        <span class="page-num" style="color:var(--text2)">未定</span>
-      </div>
-      <div class="page-cards" id="dp-0"
-        ondragover="event.preventDefault();document.getElementById('dp-0').classList.add('drag-over')"
-        ondragleave="document.getElementById('dp-0').classList.remove('drag-over')"
-        ondrop="handleDropPage(event,0)">
-        ${tbdCards.length?tbdCards.map(c=>compactCardHTML(c,moveOpts,0)).join(''):`<div class="empty-msg" style="font-size:12px">空</div>`}
-      </div>
-    </div>`;
+  function mOpts(excludePn){
+    var s='<option value="0">未定</option>';
+    for(var n=1;n<=pc;n++){if(n!==excludePn)s+='<option value="'+n+'">'+n+'p</option>';}
+    return s;
   }
-  function pageColHTML(pn){
-    if(!pn)return`<div class="page-col" style="flex:1;min-width:0"><div class="page-col-header"><span class="page-num" style="color:var(--text3)">—</span></div></div>`;
-    const pd=getPageData(pn);const bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
-    const cards=getCardsForPage(pn).filter(c=>matchesFilter(c,'page'));
-    const moveOpts=`<option value="0">未定</option>`+Array.from({length:pc},(_,i)=>i+1).filter(n=>n!==pn).map(n=>`<option value="${n}">${n}p</option>`).join('');
-    return `<div class="page-col">
-      <div class="page-col-header ${bg}">
-        <span class="page-num">${pn}p</span>
-        <select class="sec-tag-select" onchange="setPageSection(${pn},this.value)" title="セクション">
-          ${SECTIONS.map(s=>`<option value="${s}"${pd.section===s?' selected':''}>${s}</option>`).join('')}
-          <option value=""${!pd.section?' selected':''}>—</option>
-        </select>
-        <button class="page-add-btn" onclick="addCardToPage(${pn})">+</button>
-      </div>
-      <div class="page-cards ${bg}" id="dp-${pn}"
-        ondragover="event.preventDefault();document.getElementById('dp-${pn}').classList.add('drag-over')"
-        ondragleave="document.getElementById('dp-${pn}').classList.remove('drag-over')"
-        ondrop="handleDropPage(event,${pn})">
-        ${cards.length?cards.map(c=>compactCardHTML(c,moveOpts,pn)).join(''):`<div class="empty-msg" style="font-size:12px">空</div>`}
-      </div>
-    </div>`;
+  function tbdMOpts(){var s='';for(var n=1;n<=pc;n++)s+='<option value="'+n+'">'+n+'p</option>';return s;}
+
+  function tbdCol(){
+    var mo=tbdMOpts();
+    return '<div class="page-col">'
+      +'<div class="page-col-header" style="background:var(--bg)"><span class="page-num" style="color:var(--text2)">未定</span></div>'
+      +'<div class="page-cards" id="dp-0"'
+      +' ondragover="event.preventDefault();document.getElementById(\'dp-0\').classList.add(\'drag-over\')"'
+      +' ondragleave="document.getElementById(\'dp-0\').classList.remove(\'drag-over\')"'
+      +' ondrop="handleDropPage(event,0)">'
+      +(tbdCards.length?tbdCards.map(function(c){return compactCardHTML(c,mo,0);}).join(''):'<div class="empty-msg" style="font-size:12px">空</div>')
+      +'</div></div>';
   }
-  const spreadHTML=spreads.map(([rp,lp])=>{
-    const label=rp==='tbd'?`${lp}ページ / 未定`:rp&&lp?`見開き ${lp}・${rp}ページ`:rp?`${rp}ページ`:`${lp}ページ`;
-    return `<div class="spread">
-      <div class="spread-label">${label}</div>
-      <div class="spread-pages">${pageColHTML(lp)}${rp==='tbd'?tbdColHTML():pageColHTML(rp)}</div>
-    </div>`;
+  function pageCol(pn){
+    if(!pn)return '<div class="page-col" style="flex:1;min-width:0"><div class="page-col-header"><span class="page-num" style="color:var(--text3)">—</span></div></div>';
+    var pd=getPageData(pn);var bg=pd.section&&SEC_COLORS[pd.section]?SEC_COLORS[pd.section]:'';
+    var cards=getCardsForPage(pn).filter(function(c){return matchesFilter(c,'page');});
+    var mo=mOpts(pn);
+    var sOpts=SECTIONS.map(function(s){return '<option value="'+s+'"'+(pd.section===s?' selected':'')+'>'+s+'</option>';}).join('');
+    return '<div class="page-col">'
+      +'<div class="page-col-header '+bg+'">'
+      +'<span class="page-num">'+pn+'p</span>'
+      +'<select class="sec-tag-select" onchange="setPageSection('+pn+',this.value)">'+sOpts+'<option value=""'+(!pd.section?' selected':'')+'>—</option></select>'
+      +'<button class="page-add-btn" onclick="addCardToPage('+pn+')">+</button>'
+      +'</div>'
+      +'<div class="page-cards '+bg+'" id="dp-'+pn+'"'
+      +' ondragover="event.preventDefault();document.getElementById(\'dp-'+pn+'\').classList.add(\'drag-over\')"'
+      +' ondragleave="document.getElementById(\'dp-'+pn+'\').classList.remove(\'drag-over\')"'
+      +' ondrop="handleDropPage(event,'+pn+')">'
+      +(cards.length?cards.map(function(c){return compactCardHTML(c,mo,pn);}).join(''):'<div class="empty-msg" style="font-size:12px">空</div>')
+      +'</div></div>';
+  }
+  var spreadHTML=spreads.map(function(pair){
+    var rp=pair[0],lp=pair[1];
+    var label=rp==='tbd'?(lp+'ページ / 未定'):(rp&&lp?'見開き '+lp+'・'+rp+'ページ':(rp?rp+'ページ':lp+'ページ'));
+    return '<div class="spread"><div class="spread-label">'+label+'</div>'
+      +'<div class="spread-pages">'+pageCol(lp)+(rp==='tbd'?tbdCol():pageCol(rp))+'</div></div>';
   }).join('');
-  const pageViewHTML=`
-    <div class="page-controls">
-      <label>総ページ数</label>
-      <input type="number" min="1" max="200" value="${pc}" onchange="updatePageCount(parseInt(this.value)||1)">
-      <span style="font-size:12px;color:var(--text3)">${pc}p / ${Math.ceil(pc/2)}見開き</span>
-    </div>
-    <div class="quick-add" style="padding:10px 12px;margin-bottom:12px">
-      <div class="tag-pills">${filterPills('page')}</div>
-    </div>
-    <div class="spread-list">${spreadHTML}</div>`;
+  var pageView='<div class="page-controls"><label>総ページ数</label>'
+    +'<input type="number" min="1" max="200" value="'+pc+'" onchange="updatePageCount(parseInt(this.value)||1)">'
+    +'<span style="font-size:12px;color:var(--text3)">'+pc+'p / '+Math.ceil(pc/2)+'見開き</span></div>'
+    +'<div class="quick-add" style="padding:10px 12px;margin-bottom:12px"><div class="tag-pills">'+filterPills('page')+'</div></div>'
+    +'<div class="spread-list">'+spreadHTML+'</div>';
 
-  // Sketch modal
-  const penSizeBtns=PEN_SIZES.map((s,i)=>`<button class="pen-size-btn${state.penSize===s?' active':''}" onclick="state.penSize=${s};document.querySelectorAll('.pen-size-btn').forEach((b,j)=>b.classList.toggle('active',j===${i}))"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="${1+i*1.5}" fill="currentColor"/></svg></button>`).join('');
-  const colorBtns=PEN_PALETTE.map(c=>`<button class="color-btn${state.penColor===c?' active':''}${c==='#ffffff'?' white-swatch':''}" style="background:${c}" onclick="state.penColor='${c}';document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')"></button>`).join('');
-  const sketchModalHTML=state.sketchModal?`<div class="modal-bg" onclick="if(event.target===this){state.sketchModal=null;render()}">
-    <div class="sketch-modal" onclick="event.stopPropagation()">
-      <div class="sketch-toolbar">
-        <label>太さ</label>${penSizeBtns}<label>色</label>${colorBtns}
-        <button class="card-btn" onclick="clearSketch()">全消去</button>
-      </div>
-      <canvas id="sketch-canvas"></canvas>
-      <div class="sketch-btns">
-        <button onclick="state.sketchModal=null;render()">キャンセル</button>
-        <button class="btn-primary" onclick="saveSketch(${state.sketchModal.cardId})">保存</button>
-      </div>
-    </div>
-  </div>`:'';
+  var penBtns=PEN_SIZES.map(function(s,idx){
+    return '<button class="pen-size-btn'+(state.penSize===s?' active':'')+'" onclick="state.penSize='+s+';document.querySelectorAll(\'.pen-size-btn\').forEach(function(b,j){b.classList.toggle(\'active\',j==='+idx+')})"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="'+(1+idx*1.5)+'" fill="currentColor"/></svg></button>';
+  }).join('');
+  var colBtns=PEN_PALETTE.map(function(c){
+    return '<button class="color-btn'+(state.penColor===c?' active':'')+(c==='#ffffff'?' white-swatch':'')+'" style="background:'+c+'" onclick="state.penColor=\''+c+'\';document.querySelectorAll(\'.color-btn\').forEach(function(b){b.classList.remove(\'active\')});this.classList.add(\'active\')"></button>';
+  }).join('');
 
-  const workModalHTML=state.showModal?`<div class="modal-bg" onclick="if(event.target===this){state.showModal=false;render()}">
-    <div class="modal"><h3>新しい作品</h3>
-      <input id="wni" type="text" placeholder="作品名" oninput="state.newWorkName=this.value" onkeydown="if(event.key==='Enter')addWork()">
-      <div class="modal-btns"><button onclick="state.showModal=false;render()">キャンセル</button><button class="btn-primary" onclick="addWork()">追加</button></div>
-    </div>
-  </div>`:'';
+  var skModal=state.sketchModal?'<div class="modal-bg" onclick="if(event.target===this){state.sketchModal=null;render()}">'
+    +'<div class="sketch-modal" onclick="event.stopPropagation()">'
+    +'<div class="sketch-toolbar"><label>太さ</label>'+penBtns+'<label>色</label>'+colBtns
+    +'<button class="card-btn" onclick="clearSketch()">全消去</button></div>'
+    +'<canvas id="sketch-canvas"></canvas>'
+    +'<div class="sketch-btns"><button onclick="state.sketchModal=null;render()">キャンセル</button>'
+    +'<button class="btn-primary" onclick="saveSketch('+(state.sketchModal.cardId!=null?state.sketchModal.cardId:'null')+')">保存</button></div>'
+    +'</div></div>':'';
 
-  const isWorkMgr=state.tab==='works';
+  var wmModal=state.showModal?'<div class="modal-bg" onclick="if(event.target===this){state.showModal=false;render()}">'
+    +'<div class="modal"><h3>新しい作品</h3>'
+    +'<input id="wni" type="text" placeholder="作品名" oninput="state.newWorkName=this.value" onkeydown="if(event.key===\'Enter\')addWorkFromMgr()">'
+    +'<div class="modal-btns"><button onclick="state.showModal=false;render()">キャンセル</button>'
+    +'<button class="btn-primary" onclick="addWorkFromMgr()">追加</button></div></div></div>':'';
 
-  app.innerHTML=`
-    <div class="top-bar">
-      <select class="work-select" onchange="state.activeWork=parseInt(this.value);save();render()">${workOpts}</select>
-    </div>
-    ${!isWorkMgr?`<div class="logline-bar">
-      <textarea class="logline-input" rows="2" placeholder="ログライン（作品概要）…"
-        onblur="setWorkLogline(this.value)"
-      >${getWorkLogline().replace(/</g,'&lt;')}</textarea>
-    </div>`:''}
-    ${!isWorkMgr?`
-    <div class="quick-add">
-      <textarea id="card-input" rows="3" placeholder="アイデアをメモ…" oninput="state.newText=this.value">${state.newText.replace(/</g,'&lt;')}</textarea>
-      <div class="quick-footer">
-        <div class="tag-pills">${tagPills}</div>
-        <button class="btn" onclick="addCard()">追加</button>
-        <button class="btn" onclick="openSketchNew()">図</button>
-      </div>
-    </div>`:''}
-    <div class="tabs">
-      <button class="tab${state.tab==='page'?' active':''}" onclick="state.tab='page';render()">ページ見開き</button>
-      <button class="tab${state.tab==='section'?' active':''}" onclick="state.tab='section';render()">セクション一覧</button>
-      <button class="tab${state.tab==='works'?' active':''}" onclick="state.tab='works';render()">作品管理</button>
-    </div>
-    ${state.tab==='page'?pageViewHTML
-      :state.tab==='section'?`<div class="quick-add" style="padding:10px 12px;margin-bottom:12px"><div class="tag-pills">${filterPills('section')}</div></div>${sectionBoardHTML}`
-      :workManagementHTML()}
-    ${!isWorkMgr?`<div class="export-row">
-      <button class="btn" onclick="exportText()">テキスト書き出し</button>
-      <button class="btn" onclick="exportBackup()">書き出し</button>
-      <button class="btn" onclick="importBackup()">読み込み</button>
-    </div>`:''}
-    ${sketchModalHTML}${workModalHTML}
-  `;
-  if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
+  var pModal=state.pageAddModal?'<div class="modal-bg" onclick="if(event.target===this){state.pageAddModal=null;render()}">'
+    +'<div class="padd-modal" onclick="event.stopPropagation()">'
+    +'<div class="padd-header"><span>'+state.pageAddModal.pageNum+'pにカードを追加</span>'
+    +'<button onclick="state.pageAddModal=null;render()" style="background:transparent;border:none;font-size:18px;color:var(--text3);cursor:pointer;line-height:1">&#xD7;</button></div>'
+    +'<div class="padd-body">'
+    +'<div class="padd-tags">'+Object.keys(TAG_LABELS).map(function(k){return '<span class="pill pill-'+k+(state.pageAddModal.tag===k?' active':'')+'" onclick="state.pageAddModal=Object.assign({},state.pageAddModal,{tag:\''+k+'\'});render()">'+TAG_LABELS[k]+'</span>';}).join('')+'</div>'
+    +'<textarea class="padd-ta" id="padd-ta" placeholder="テキストを入力…">'+state.pageAddModal.text.replace(/</g,'&lt;')+'</textarea>'
+    +'</div>'
+    +'<div class="padd-btns"><button class="btn" onclick="commitSketchToPage()">手書きメモ</button>'
+    +'<button class="btn btn-primary" onclick="commitCardToPage()">追加</button></div>'
+    +'</div></div>':'';
+
+  var isWM=state.tab==='works';
+  app.innerHTML=
+    '<div class="top-bar"><select class="work-select" onchange="state.activeWork=parseInt(this.value);save();render()">'+wOpts+'</select></div>'
+    +(!isWM?'<div class="logline-bar"><textarea class="logline-input" rows="2" placeholder="ログライン（作品概要）…" onblur="setWorkLogline(this.value)">'+getWorkLogline().replace(/</g,'&lt;')+'</textarea></div>':'')
+    +(!isWM?'<div class="quick-add"><textarea id="card-input" rows="3" placeholder="アイデアをメモ…" oninput="state.newText=this.value">'+state.newText.replace(/</g,'&lt;')+'</textarea>'
+      +'<div class="quick-footer"><div class="tag-pills">'+tagPills+'</div>'
+      +'<button class="btn" onclick="addCard()">追加</button>'
+      +'<button class="btn" onclick="openSketchNew()">図</button></div></div>':'')
+    +'<div class="tabs">'
+    +'<button class="tab'+(state.tab==='page'?' active':'')+'" onclick="state.tab=\'page\';render()">ページ見開き</button>'
+    +'<button class="tab'+(state.tab==='section'?' active':'')+'" onclick="state.tab=\'section\';render()">セクション一覧</button>'
+    +'<button class="tab'+(state.tab==='works'?' active':'')+'" onclick="state.tab=\'works\';render()">作品管理</button>'
+    +'</div>'
+    +(state.tab==='page'?pageView
+      :state.tab==='section'?'<div class="quick-add" style="padding:10px 12px;margin-bottom:12px"><div class="tag-pills">'+filterPills('section')+'</div></div>'+secBoard
+      :workManagementHTML())
+    +(!isWM?'<div class="export-row">'
+      +'<button class="btn" onclick="exportText()">テキスト書き出し</button>'
+      +'<button class="btn" onclick="exportBackup()">書き出し</button>'
+      +'<button class="btn" onclick="importBackup()">読み込み</button>'
+      +'</div>':'')
+    +skModal+wmModal+pModal;
+
+  if(state.sketchModal!=null)requestAnimationFrame(initCanvas);
 }
 
-// ── Init ──
-(async()=>{
-  try{
-    db=await openDB();await loadAll();
-    const notice=document.getElementById('db-notice');if(notice)notice.remove();
-  }catch(e){
-    console.error('DB error',e);
-    const notice=document.getElementById('db-notice');if(notice)notice.textContent='⚠ データベースエラー。データは保存されません。';
+(function(){
+  function init(){
+    openDB().then(function(d){db=d;}).catch(function(){db=null;}).then(function(){
+      return loadAll();
+    }).then(function(){
+      var n=document.getElementById('db-notice');if(n)n.remove();
+    }).catch(function(e){
+      var n=document.getElementById('db-notice');if(n)n.textContent='読み込みエラー: '+e.message;
+    }).then(function(){
+      render();
+    });
   }
-  render();
+  init();
 })();
 </script>
 </body>
