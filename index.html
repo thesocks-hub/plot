@@ -117,6 +117,13 @@ button,select,input,textarea{font-family:inherit}
 .sec-tag-select{font-size:11px;padding:2px 4px;border-radius:4px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);flex:1;min-width:0}
 .page-add-btn{font-size:14px;line-height:1;padding:1px 5px;border:0.5px solid var(--border2);border-radius:4px;background:transparent;color:var(--text2);cursor:pointer;flex-shrink:0}
 .page-add-btn:active{background:var(--bg)}
+/* page add modal */
+.page-add-modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:360px;border:0.5px solid var(--border);overflow:hidden}
+.page-add-modal-header{padding:12px 14px;font-size:14px;font-weight:500;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.page-add-modal-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.page-add-tag-row{display:flex;gap:5px;flex-wrap:wrap}
+.page-add-textarea{width:100%;font-size:15px;padding:8px 10px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);resize:none;outline:none;line-height:1.6;min-height:72px}
+.page-add-modal-btns{display:flex;gap:8px;padding:0 14px 14px}
 .page-cards{padding:6px;display:flex;flex-direction:column;gap:5px;min-height:60px}
 .page-cards.drag-over{outline:2px dashed var(--border2);outline-offset:-2px;border-radius:6px}
 .page-bg-op{background:var(--sec-op)!important}
@@ -213,7 +220,7 @@ let state={
   penColor:TAG_COLORS.plot,penSize:PEN_SIZES[1],
   pageData:[],
   newWorkNameMgr:'',
-  filterTags:{page:[],section:[]},
+  pageAddModal:null, // {pageNum} or null
   secLoglines:{},
   secSortMode:{},
 };
@@ -246,7 +253,7 @@ async function loadAll(){
   const saved=await idbGet('state','main');
   if(saved){
     if(saved.works)saved.works=saved.works.map(w=>({logline:'',...w}));
-    state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null};
+    state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null,pageAddModal:null};
   }
   for(const c of state.cards){try{const sk=await idbGet('sketches',c.id);if(sk)c.sketch=sk;}catch(e){}}
 }
@@ -314,14 +321,33 @@ function addCard(){
   state.newText='';save();render();
 }
 function addCardToPage(pn){
-  const text=prompt(`${pn}pにカードを追加`);
-  if(!text||!text.trim())return;
-  const sec=getPageData(pn).section||'Note';
-  const pageCards=getCardsForPage(pn);const maxOp=pageCards.length?Math.max(...pageCards.map(c=>c.op??0))+1:0;
+  state.pageAddModal={pageNum:pn,text:'',tag:state.newTag};render();
+  setTimeout(()=>{const ta=document.getElementById('page-add-ta');if(ta)ta.focus();},50);
+}
+function commitCardToPage(){
+  const m=state.pageAddModal;if(!m)return;
+  const text=(document.getElementById('page-add-ta')?.value||m.text).trim();
+  if(!text){state.pageAddModal=null;render();return;}
+  const sec=getPageData(m.pageNum).section||'Note';
+  const pageCards=getCardsForPage(m.pageNum);const maxOp=pageCards.length?Math.max(...pageCards.map(c=>c.op??0))+1:0;
   const secCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
   const maxOs=secCards.length?Math.max(...secCards.map(c=>c.os??0))+1:0;
-  state.cards.push({id:state.nextId++,workId:state.activeWork,section:sec,tag:state.newTag,text:text.trim(),sketch:null,pageNum:pn,op:maxOp,os:maxOs});
-  save();render();
+  state.cards.push({id:state.nextId++,workId:state.activeWork,section:sec,tag:m.tag,text,sketch:null,pageNum:m.pageNum,op:maxOp,os:maxOs});
+  state.pageAddModal=null;save();render();
+}
+function commitSketchToPage(){
+  const m=state.pageAddModal;if(!m)return;
+  // スケッチモーダルを開く前にpageAddModalを閉じ、スケッチ保存後にページへ紐付ける
+  state.pageAddModal=null;
+  // 新規カードをまず作ってからスケッチを開く
+  const sec=getPageData(m.pageNum).section||'Note';
+  const pageCards=getCardsForPage(m.pageNum);const maxOp=pageCards.length?Math.max(...pageCards.map(c=>c.op??0))+1:0;
+  const secCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
+  const maxOs=secCards.length?Math.max(...secCards.map(c=>c.os??0))+1:0;
+  const newCard={id:state.nextId++,workId:state.activeWork,section:sec,tag:m.tag,text:'',sketch:null,pageNum:m.pageNum,op:maxOp,os:maxOs};
+  state.cards.push(newCard);
+  save();
+  openSketch(newCard.id);
 }
 function updatePageCount(n){const w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
 
@@ -551,7 +577,7 @@ function compactCardHTML(c,pageMoveOpts,pn){
       </div>
     </div>
     ${c.text?`<div class="card-compact-text">${c.text.replace(/</g,'&lt;')}</div>`:''}
-    ${c.sketch?`<img class="card-compact-sketch" src="${c.sketch}" alt="">`:''}
+    ${c.sketch?`<img class="card-compact-sketch" src="${c.sketch}" onclick="event.stopPropagation();openSketch(${c.id})" alt="スケッチ">`:''}
   </div>`;
 }
 
@@ -693,6 +719,26 @@ function render(){
     </div>
     <div class="spread-list">${spreadHTML}</div>`;
 
+  // Page add modal
+  const pageAddModalHTML=state.pageAddModal?`<div class="modal-bg" onclick="if(event.target===this){state.pageAddModal=null;render()}">
+    <div class="page-add-modal" onclick="event.stopPropagation()">
+      <div class="page-add-modal-header">
+        <span>${state.pageAddModal.pageNum}pにカードを追加</span>
+        <button onclick="state.pageAddModal=null;render()" style="background:transparent;border:none;font-size:18px;color:var(--text3);cursor:pointer;line-height:1">×</button>
+      </div>
+      <div class="page-add-modal-body">
+        <div class="page-add-tag-row">
+          ${Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${state.pageAddModal.tag===k?' active':''}" onclick="state.pageAddModal={...state.pageAddModal,tag:'${k}'};render()">${v}</span>`).join('')}
+        </div>
+        <textarea class="page-add-textarea" id="page-add-ta" placeholder="テキストを入力…" oninput="state.pageAddModal={...state.pageAddModal,text:this.value}">${state.pageAddModal.text.replace(/</g,'&lt;')}</textarea>
+      </div>
+      <div class="page-add-modal-btns">
+        <button class="btn" onclick="commitSketchToPage()">手書きメモ</button>
+        <button class="btn btn-primary" onclick="commitCardToPage()">追加</button>
+      </div>
+    </div>
+  </div>`:'';
+
   // Sketch modal
   const penSizeBtns=PEN_SIZES.map((s,i)=>`<button class="pen-size-btn${state.penSize===s?' active':''}" onclick="state.penSize=${s};document.querySelectorAll('.pen-size-btn').forEach((b,j)=>b.classList.toggle('active',j===${i}))"><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="${1+i*1.5}" fill="currentColor"/></svg></button>`).join('');
   const colorBtns=PEN_PALETTE.map(c=>`<button class="color-btn${state.penColor===c?' active':''}${c==='#ffffff'?' white-swatch':''}" style="background:${c}" onclick="state.penColor='${c}';document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')"></button>`).join('');
@@ -750,7 +796,7 @@ function render(){
       <button class="btn" onclick="exportBackup()">書き出し</button>
       <button class="btn" onclick="importBackup()">読み込み</button>
     </div>`:''}
-    ${sketchModalHTML}${workModalHTML}
+    ${sketchModalHTML}${workModalHTML}${pageAddModalHTML}
   `;
   if(state.sketchModal!=null)requestAnimationFrame(()=>initCanvas());
 }
