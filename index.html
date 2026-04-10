@@ -66,12 +66,8 @@ button,select,input,textarea{font-family:inherit}
 .sec-title{font-size:13px;font-weight:500;flex-shrink:0}
 .sec-count{font-size:12px;color:var(--text2);flex-shrink:0}
 .sec-chevron{font-size:11px;color:var(--text3);margin-left:auto;flex-shrink:0}
-.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0;margin-top:2px}
+.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0;flex-basis:100%}
 .sec-logline::placeholder{color:var(--text3)}
-.sec-controls{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--surface);border-bottom:0.5px solid var(--border);flex-wrap:wrap}
-.sec-sort-btn{font-size:11px;padding:3px 8px;border-radius:5px;border:0.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer}
-.sec-sort-btn.active{background:var(--text);color:#fff;border-color:var(--text)}
-.sec-page-input{width:52px;font-size:12px;padding:2px 5px;border-radius:5px;border:0.5px solid var(--border2);background:var(--bg)}
 .cards-container{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:36px;background:var(--surface)}
 .cards-container.drag-over{outline:2px dashed var(--border2);outline-offset:-4px;border-radius:6px}
 
@@ -95,9 +91,6 @@ button,select,input,textarea{font-family:inherit}
 .tag-note .card-tag-badge{background:var(--note-bg);color:var(--note);border:1px solid var(--note-border)}
 .card-page-badge{font-size:10px;padding:2px 6px;border:0.5px solid var(--border);border-radius:10px;color:var(--text3)}
 .card-page-select{font-size:11px;padding:2px 5px;border:0.5px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text2);cursor:pointer}
-.sec-logline-row{padding:4px 12px 6px;background:var(--surface);border-bottom:0.5px solid var(--border)}
-.sec-logline{width:100%;font-size:12px;color:var(--text2);border:none;outline:none;background:transparent;resize:none;line-height:1.4;padding:0;flex-basis:100%}
-.sec-logline::placeholder{color:var(--text3)}
 .card-text{font-size:14px;color:var(--text);line-height:1.6;white-space:pre-wrap;word-break:break-all}
 .card-edit-area{width:100%;font-size:14px;line-height:1.6;border:0.5px solid var(--border2);border-radius:6px;padding:6px 8px;background:var(--bg);color:var(--text);resize:none;outline:none;min-height:60px}
 .card-sketch-thumb{width:100%;height:auto;border-radius:6px;border:0.5px solid var(--border);display:block;cursor:pointer;background:#fff}
@@ -119,9 +112,11 @@ button,select,input,textarea{font-family:inherit}
 .spread-pages{display:flex}
 .page-col{flex:1;min-width:0;border-left:0.5px solid var(--border)}
 .page-col:first-child{border-left:none}
-.page-col-header{padding:6px 8px;display:flex;align-items:center;justify-content:space-between;gap:4px;border-bottom:0.5px solid var(--border)}
-.page-num{font-size:12px;font-weight:500;color:var(--text2)}
-.sec-tag-select{font-size:11px;padding:2px 4px;border-radius:4px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);max-width:72px}
+.page-col-header{padding:6px 8px;display:flex;align-items:center;gap:4px;border-bottom:0.5px solid var(--border)}
+.page-num{font-size:12px;font-weight:500;color:var(--text2);flex-shrink:0}
+.sec-tag-select{font-size:11px;padding:2px 4px;border-radius:4px;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);flex:1;min-width:0}
+.page-add-btn{font-size:14px;line-height:1;padding:1px 5px;border:0.5px solid var(--border2);border-radius:4px;background:transparent;color:var(--text2);cursor:pointer;flex-shrink:0}
+.page-add-btn:active{background:var(--bg)}
 .page-cards{padding:6px;display:flex;flex-direction:column;gap:5px;min-height:60px}
 .page-cards.drag-over{outline:2px dashed var(--border2);outline-offset:-2px;border-radius:6px}
 .page-bg-op{background:var(--sec-op)!important}
@@ -155,7 +150,6 @@ button,select,input,textarea{font-family:inherit}
 .modal h3{font-size:16px;font-weight:500;margin-bottom:12px}
 .modal input{width:100%;font-size:14px;padding:8px 10px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:inherit;margin-bottom:12px}
 .modal-btns{display:flex;gap:8px;justify-content:flex-end}
-/* Sketch modal — B4縦横比 257:364 ≒ 0.706 */
 .sketch-modal{background:var(--surface);border-radius:var(--radius);width:100%;max-width:460px;border:0.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
 .sketch-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:0.5px solid var(--border);flex-wrap:wrap}
 .sketch-toolbar label{font-size:12px;color:var(--text2)}
@@ -201,14 +195,12 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 <body>
 <div class="app" id="app"><div class="db-notice" id="db-notice">読み込み中…</div></div>
 <script>
-// Note を先頭に
 const SECTIONS=['Note','OP','PP1','MP','PP2','ED'];
 const TAG_LABELS={plot:'プロット',hako:'箱書き',serif:'セリフ',memo:'メモ',name:'ネーム'};
 const TAG_COLORS={plot:'#185FA5',hako:'#2a8a4a',serif:'#e24b4a',memo:'#b07d10',name:'#1a1916'};
 const SEC_COLORS={OP:'page-bg-op',PP1:'page-bg-pp1',MP:'page-bg-mp',PP2:'page-bg-pp2',ED:'page-bg-ed',Note:'page-bg-note'};
 const PEN_SIZES=[2,4,8];
 const PEN_PALETTE=['#185FA5','#2a8a4a','#e24b4a','#b07d10','#1a1916','#7b3fb5','#888888','#ffffff'];
-// B4比率: 257mm x 364mm → height/width = 364/257 ≈ 1.4163
 const B4_RATIO=364/257;
 
 let state={
@@ -222,9 +214,7 @@ let state={
   pageData:[],
   newWorkNameMgr:'',
   filterTags:{page:[],section:[]},
-  // セクションごとのログライン {workId_sec: text}
   secLoglines:{},
-  // セクションごとのソート順 {workId_sec: 'page'|'manual'}
   secSortMode:{},
 };
 
@@ -255,7 +245,6 @@ async function delSketchIDB(id){if(db)await idbDel('sketches',id);}
 async function loadAll(){
   const saved=await idbGet('state','main');
   if(saved){
-    // migrate: ensure works have logline field
     if(saved.works)saved.works=saved.works.map(w=>({logline:'',...w}));
     state={...state,...saved,showModal:false,sketchModal:null,editingCardId:null,editingTag:null};
   }
@@ -278,11 +267,9 @@ function getCardsForSection(sec){
   const mode=state.secSortMode[key]||'page';
   const cards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
   if(mode==='page'){
-    // pageNum=0 (未定) は末尾, それ以外はページ番号→ページ内op順
     return cards.sort((a,b)=>{
       if(a.pageNum===0&&b.pageNum===0)return(a.os??0)-(b.os??0);
-      if(a.pageNum===0)return 1;
-      if(b.pageNum===0)return -1;
+      if(a.pageNum===0)return 1;if(b.pageNum===0)return -1;
       if(a.pageNum!==b.pageNum)return a.pageNum-b.pageNum;
       return(a.op??0)-(b.op??0);
     });
@@ -298,9 +285,7 @@ function matchesFilter(card,view){
   const filters=state.filterTags[view]||[];
   return !filters.length||filters.includes(card.tag);
 }
-function secSortKey(sec){return`${state.activeWork}_${sec}`;}
-function getSortMode(sec){return state.secSortMode[secSortKey(sec)]||'page';}
-function setSortMode(sec,mode){state.secSortMode[secSortKey(sec)]=mode;save();render();}
+function getSortMode(sec){return(state.secSortMode[`${state.activeWork}_${sec}`])||'page';}
 function getSecLogline(sec){return state.secLoglines[`${state.activeWork}_${sec}`]||'';}
 function setSecLogline(sec,text){state.secLoglines[`${state.activeWork}_${sec}`]=text;save();}
 function getWorkLogline(){return getWork()?.logline||'';}
@@ -327,6 +312,16 @@ function addCard(){
   const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
   state.cards.push({id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text,sketch:null,pageNum:0,os:maxOs,op:0});
   state.newText='';save();render();
+}
+function addCardToPage(pn){
+  const text=prompt(`${pn}pにカードを追加`);
+  if(!text||!text.trim())return;
+  const sec=getPageData(pn).section||'Note';
+  const pageCards=getCardsForPage(pn);const maxOp=pageCards.length?Math.max(...pageCards.map(c=>c.op??0))+1:0;
+  const secCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section===sec);
+  const maxOs=secCards.length?Math.max(...secCards.map(c=>c.os??0))+1:0;
+  state.cards.push({id:state.nextId++,workId:state.activeWork,section:sec,tag:state.newTag,text:text.trim(),sketch:null,pageNum:pn,op:maxOp,os:maxOs});
+  save();render();
 }
 function updatePageCount(n){const w=getWork();if(!w)return;w.pageCount=Math.max(1,Math.min(200,n));save();render();}
 
@@ -380,7 +375,6 @@ function handleDropOnCard(e,targetId,ctx,ctxVal){
   document.querySelectorAll('.drag-over-card').forEach(el=>el.classList.remove('drag-over-card'));
   if(dragId==null||dragId===targetId)return;
   if(ctx==='section'){
-    // ページ順モードのときはカード間ドラッグ並び替えを無効（ページ移動は↕セレクトで）
     if(getSortMode(ctxVal)==='page'){moveCard(dragId,ctxVal);}
     else{const ok=reorderInList(dragId,targetId,()=>getCardsForSection(ctxVal),'os',{section:ctxVal});if(!ok)moveCard(dragId,ctxVal);}
   }else{const ok=reorderInList(dragId,targetId,()=>getCardsForPage(ctxVal),'op',{pageNum:ctxVal});if(!ok)moveCardToPage(dragId,ctxVal);}
@@ -401,22 +395,17 @@ function saveEdit(id){
 }
 function cancelEdit(){state.editingCardId=null;state.editingText='';state.editingTag=null;render();}
 
-// ── Sketch — B4比率 ──
+// ── Sketch ──
 let skCanvas=null,skCtx=null,skOff=null,skOffCtx=null,drawing=false;
 function drawImageContain(ctx,img,maxW,maxH){
   const scale=Math.min(maxW/img.width,maxH/img.height);
-  const w=img.width*scale;
-  const h=img.height*scale;
-  const x=(maxW-w)/2;
-  const y=(maxH-h)/2;
-  ctx.drawImage(img,x,y,w,h);
+  const w=img.width*scale,h=img.height*scale;
+  ctx.drawImage(img,(maxW-w)/2,(maxH-h)/2,w,h);
 }
 function initCanvas(){
   skCanvas=document.getElementById('sketch-canvas');if(!skCanvas)return;
   const W=skCanvas.parentElement.clientWidth||460;
-  skCanvas.width=W;
-  skCanvas.height=Math.round(W*B4_RATIO);
-  skCanvas.style.height=skCanvas.height+'px';
+  skCanvas.width=W;skCanvas.height=Math.round(W*B4_RATIO);skCanvas.style.height=skCanvas.height+'px';
   skCtx=skCanvas.getContext('2d');
   skOff=document.createElement('canvas');skOff.width=skCanvas.width;skOff.height=skCanvas.height;
   skOffCtx=skOff.getContext('2d');skOffCtx.fillStyle='#fff';skOffCtx.fillRect(0,0,skOff.width,skOff.height);
@@ -449,7 +438,6 @@ async function saveSketch(cardId){
   if(!skOff)return;
   const dataURL=skOff.toDataURL('image/jpeg',0.75);
   if(cardId==null){
-    // 図のみ新規カード → Note固定
     const noteCards=state.cards.filter(c=>c.workId===state.activeWork&&c.section==='Note');
     const maxOs=noteCards.length?Math.max(...noteCards.map(c=>c.os??0))+1:0;
     const nc={id:state.nextId++,workId:state.activeWork,section:'Note',tag:state.newTag,text:'',sketch:dataURL,pageNum:0,os:maxOs,op:0};
@@ -467,11 +455,9 @@ function openSketchNew(){state.sketchModal={cardId:null};render();}
 // ── Export / Backup ──
 function exportText(){
   const w=getWork();let out=`【${w?.name||'作品'}】\n`;
-  if(w?.logline)out+=`${w.logline}\n`;
-  out+='\n';
+  if(w?.logline)out+=`${w.logline}\n`;out+='\n';
   for(const sec of SECTIONS){
-    const ll=getSecLogline(sec);
-    const cards=getCardsForSection(sec);if(!cards.length&&!ll)continue;
+    const ll=getSecLogline(sec);const cards=getCardsForSection(sec);if(!cards.length&&!ll)continue;
     out+=`■ ${sec}`;if(ll)out+=` — ${ll}`;out+='\n';
     for(const c of cards)out+=`[${TAG_LABELS[c.tag]}]${c.text?' '+c.text:''}${c.sketch?' [図あり]':''}\n`;
     out+='\n';
@@ -584,8 +570,7 @@ function workManagementHTML(){
       <span class="work-row-drag-handle">⠿</span>
       <div class="work-row-body">
         <input class="work-name-input" type="text" value="${w.name.replace(/"/g,'&quot;')}"
-          onchange="renameWork(${w.id},this.value)"
-          onblur="renameWork(${w.id},this.value);save()">
+          onchange="renameWork(${w.id},this.value)" onblur="renameWork(${w.id},this.value);save()">
         <textarea class="work-logline-input" rows="2" placeholder="ログライン…"
           onblur="state.works=state.works.map(wk=>wk.id===${w.id}?{...wk,logline:this.value}:wk);save()"
         >${(w.logline||'').replace(/</g,'&lt;')}</textarea>
@@ -622,7 +607,7 @@ function render(){
   const tagPills=Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${state.newTag===k?' active':''}" onclick="state.newTag='${k}';state.penColor='${TAG_COLORS[k]}';render()">${v}</span>`).join('');
   const filterPills=view=>Object.entries(TAG_LABELS).map(([k,v])=>`<span class="pill pill-${k}${(state.filterTags[view]||[]).includes(k)?' active':''}" onclick="toggleFilterTag('${view}','${k}')">${v}</span>`).join('');
 
-  // Section board — Note 先頭、各セクションにログライン・ページ数設定・ソート切替
+  // Section board
   const sectionBoardHTML=SECTIONS.map(sec=>{
     const cards=getCardsForSection(sec).filter(c=>matchesFilter(c,'section'));
     const collapsed=state.collapsedSections[sec];
@@ -657,7 +642,9 @@ function render(){
   function tbdColHTML(){
     const moveOpts=Array.from({length:pc},(_,i)=>i+1).map(n=>`<option value="${n}">${n}p</option>`).join('');
     return `<div class="page-col">
-      <div class="page-col-header" style="background:var(--bg)"><span class="page-num" style="color:var(--text2)">未定</span></div>
+      <div class="page-col-header" style="background:var(--bg)">
+        <span class="page-num" style="color:var(--text2)">未定</span>
+      </div>
       <div class="page-cards" id="dp-0"
         ondragover="event.preventDefault();document.getElementById('dp-0').classList.add('drag-over')"
         ondragleave="document.getElementById('dp-0').classList.remove('drag-over')"
@@ -678,6 +665,7 @@ function render(){
           ${SECTIONS.map(s=>`<option value="${s}"${pd.section===s?' selected':''}>${s}</option>`).join('')}
           <option value=""${!pd.section?' selected':''}>—</option>
         </select>
+        <button class="page-add-btn" onclick="addCardToPage(${pn})">+</button>
       </div>
       <div class="page-cards ${bg}" id="dp-${pn}"
         ondragover="event.preventDefault();document.getElementById('dp-${pn}').classList.add('drag-over')"
@@ -700,7 +688,7 @@ function render(){
       <input type="number" min="1" max="200" value="${pc}" onchange="updatePageCount(parseInt(this.value)||1)">
       <span style="font-size:12px;color:var(--text3)">${pc}p / ${Math.ceil(pc/2)}見開き</span>
     </div>
-    <div class="quick-add" style="padding:10px 12px">
+    <div class="quick-add" style="padding:10px 12px;margin-bottom:12px">
       <div class="tag-pills">${filterPills('page')}</div>
     </div>
     <div class="spread-list">${spreadHTML}</div>`;
@@ -754,7 +742,9 @@ function render(){
       <button class="tab${state.tab==='section'?' active':''}" onclick="state.tab='section';render()">セクション一覧</button>
       <button class="tab${state.tab==='works'?' active':''}" onclick="state.tab='works';render()">作品管理</button>
     </div>
-    ${state.tab==='page'?pageViewHTML:state.tab==='section'?`<div class="quick-add" style="padding:10px 12px"><div class="tag-pills">${filterPills('section')}</div></div>${sectionBoardHTML}`:workManagementHTML()}
+    ${state.tab==='page'?pageViewHTML
+      :state.tab==='section'?`<div class="quick-add" style="padding:10px 12px;margin-bottom:12px"><div class="tag-pills">${filterPills('section')}</div></div>${sectionBoardHTML}`
+      :workManagementHTML()}
     ${!isWorkMgr?`<div class="export-row">
       <button class="btn" onclick="exportText()">テキスト書き出し</button>
       <button class="btn" onclick="exportBackup()">書き出し</button>
