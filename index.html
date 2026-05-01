@@ -577,16 +577,20 @@ function openSketch(cardId){state.sketchModal={cardId:cardId};render();}
 function openSketchNew(){state.sketchModal={cardId:null};render();}
 
 function exportText(){
-  var w=getWork();var out='【'+(w?w.name:'作品')+'】\n';
-  if(w&&w.logline)out+=w.logline+'\n';out+='\n';
-  SECTIONS.forEach(function(sec){
-    var ll=getSecLogline(sec);var cards=getCardsForSection(sec);
-    if(!cards.length&&!ll)return;
-    out+='■ '+sec;if(ll)out+=' — '+ll;out+='\n';
-    cards.forEach(function(c){out+='['+(TAG_LABELS[c.tag]||c.tag)+']'+(c.text?' '+c.text:'')+(c.sketch?' [図あり]':'')+'\n';});
-    out+='\n';
+  var w=getWork();
+  var serifCards=state.cards.filter(function(c){return c.workId===state.activeWork&&c.tag==='serif';});
+  // ページ番号順 → ページ内op順 → 未定は末尾
+  serifCards.sort(function(a,b){
+    if(a.pageNum===0&&b.pageNum===0)return(a.os||0)-(b.os||0);
+    if(a.pageNum===0)return 1;if(b.pageNum===0)return -1;
+    if(a.pageNum!==b.pageNum)return a.pageNum-b.pageNum;
+    return(a.op||0)-(b.op||0);
   });
-  var a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(out);a.download=(w?w.name:'manga')+'_plot.txt';a.click();
+  var out='【'+(w?w.name:'作品')+'】 セリフ書き出し\n\n';
+  serifCards.forEach(function(c){
+    out+=c.text+'\n\n';
+  });
+  var a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(out);a.download=(w?w.name:'manga')+'_serif.txt';a.click();
 }
 function exportBackup(){
   var data=JSON.stringify({works:state.works,activeWork:state.activeWork,cards:state.cards,nextId:state.nextId,pageData:state.pageData,secLoglines:state.secLoglines,secSortMode:state.secSortMode});
@@ -849,7 +853,7 @@ function render(){
       :state.tab==='section'?'<div class="quick-add" style="padding:10px 12px;margin-bottom:12px"><div class="tag-pills">'+filterPills('section')+'</div></div>'+secBoard
       :workManagementHTML())
     +(!isWM?'<div class="export-row">'
-      +'<button class="btn" onclick="exportText()">テキスト書き出し</button>'
+      +'<button class="btn" onclick="exportText()">セリフ書き出し</button>'
       +'<button class="btn" onclick="exportBackup()">書き出し</button>'
       +'<button class="btn" onclick="importBackup()">読み込み</button>'
       +'</div>':'')
