@@ -134,6 +134,11 @@ canvas#sketch-canvas{display:block;width:100%;touch-action:none;background:#fff;
 .export-row button{flex:1;font-size:13px;padding:8px;min-width:80px}
 .tag-edit-select{font-size:11px;padding:2px 6px;border-radius:5px;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2)}
 .db-notice{font-size:11px;color:var(--text3);text-align:center;padding:2px 0 8px}
+.sync-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.sync-status{font-size:12px;color:var(--text3);flex:1}
+.sync-status.ok{color:#2a8a4a}
+.sync-status.err{color:#e24b4a}
+.sync-status.ing{color:#b07d10}
 .work-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .work-row{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:flex-start;gap:10px;cursor:grab}
 .work-row:active{opacity:.8;cursor:grabbing}
@@ -187,7 +192,10 @@ var state={
   pageData:[],newWorkNameMgr:'',
   filterTags:{page:[],section:[]},
   secLoglines:{},secSortMode:{},
-  pageAddModal:null
+  pageAddModal:null,
+  syncToken:'',
+  syncStatus:'',
+  syncModal:false
 };
 
 var db=null;
@@ -575,6 +583,54 @@ function removeSketch(id){
 }
 function openSketch(cardId){state.sketchModal={cardId:cardId};render();}
 function openSketchNew(){state.sketchModal={cardId:null};render();}
+
+var WORKER_URL='https://cards-sync.thesocks.workers.dev';
+
+function encryptData(text,pass){
+  // XOR-based obfuscation + base64 (simple, no SubtleCrypto dependency issues)
+  var key=[];for(var i=0;i<pass.length;i++)key.push(pass.charCodeAt(i));
+  var out=[];for(var i=0;i<text.length;i++)out.push(String.fromCharCode(text.charCodeAt(i)^key[i%key.length]));
+  return btoa(unescape(encodeURIComponent(out.join(''))));
+}
+function decryptData(b64,pass){
+  try{
+    var text=decodeURIComponent(escape(atob(b64)));
+    var key=[];for(var i=0;i<pass.length;i++)key.push(pass.charCodeAt(i));
+    var out=[];for(var i=0;i<text.length;i++)out.push(String.fromCharCode(text.charCodeAt(i)^key[i%key.length]));
+    return out.join('');
+  }catch(e){return null;}
+}
+
+function syncUpload(){
+  var token=state.syncToken.trim();
+  if(!token){alert('同期トークンを入力してください');return;}
+  var slim=state.cards.map(function(c){var r={};for(var k in c){if(k!=='sketch')r[k]=c[k];}return r;});
+  var data=JSON.stringify({works:state.works,activeWork:state.activeWork,cards:slim,nextId:state.nextId,pageData:state.pageData,secLoglines:state.secLoglines,secSortMode:state.secSortMode});
+  var encrypted=encryptData(data,token);
+  state.syncStatus='ing';render();
+  fetch(WORKER_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Auth-Token':token},body:JSON.stringify({data:encrypted})})
+    .then(function(r){return r.json();})
+    .then(function(r){state.syncStatus=r.ok?'ok':'err';state.syncModal=false;render();setTimeout(function(){state.syncStatus='';render();},3000);})
+    .catch(function(){state.syncStatus='err';render();setTimeout(function(){state.syncStatus='';render();},3000);});
+}
+
+function syncDownload(){
+  var token=state.syncToken.trim();
+  if(!token){alert('同期トークンを入力してください');return;}
+  state.syncStatus='ing';render();
+  fetch(WORKER_URL,{headers:{'X-Auth-Token':token}})
+    .then(function(r){return r.json();})
+    .then(function(r){
+      if(!r.data){state.syncStatus='err';render();setTimeout(function(){state.syncStatus='';render();},3000);return;}
+      var decrypted=decryptData(r.data,token);
+      if(!decrypted){state.syncStatus='err';alert('復号失敗。トークンが違う可能性があります。');render();return;}
+      var data=JSON.parse(decrypted);
+      if(data.works)data.works=data.works.map(function(w){return Object.assign({logline:''},w);});
+      Object.assign(state,data,{showModal:false,sketchModal:null,editingCardId:null,pageAddModal:null,syncModal:false});
+      save();state.syncStatus='ok';render();setTimeout(function(){state.syncStatus='';render();},3000);
+    })
+    .catch(function(){state.syncStatus='err';render();setTimeout(function(){state.syncStatus='';render();},3000);});
+}
 
 function exportText(){
   var w=getWork();
