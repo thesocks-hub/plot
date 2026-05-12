@@ -725,7 +725,7 @@ function fullCardHTML(c,secOpts,ctx,ctxVal){
     +'<div class="card-top">'
     +'<span class="card-tag-badge">'+TAG_LABELS[tag]+'</span>'
     +(tag==='serif'?'<input class="card-char-input" type="text" placeholder="人物名" value="'+(c.charName||'').replace(/"/g,'&quot;')+'" onclick="event.stopPropagation()" onchange="updateCardChar('+c.id+',this.value)">':'')
-    +(tag==='serif'?'<button class="card-mono-btn'+(c.mono?' on':'')+'" onclick="event.stopPropagation();toggleMono('+c.id+')">💬</button>':'')
+    +(tag==='serif'?'<button class="card-mono-btn" onclick="event.stopPropagation();toggleMono('+c.id+')">'+(c.mono?'💬':'👤')+'</button>':'')
     +'<select class="card-page-select" onclick="event.stopPropagation()" onchange="moveCardToPage('+c.id+',this.value)">'+pOpts+'</select>'
     +(editing?tagSelectEdit(tag):'')+'</div>'
     +(editing
@@ -760,7 +760,7 @@ function compactCardHTML(c,mOpts,pn){
     +'</div></div>'
     +(tag==='serif'?'<div style="display:flex;gap:5px;align-items:center;margin-top:3px">'
       +'<input class="card-char-input" type="text" placeholder="人物名" value="'+(c.charName||'').replace(/"/g,'&quot;')+'" onclick="event.stopPropagation()" onchange="updateCardChar('+c.id+',this.value)">'
-      +'<button class="card-mono-btn'+(c.mono?' on':'')+'" onclick="event.stopPropagation();toggleMono('+c.id+')">💬</button>'
+      +'<button class="card-mono-btn" onclick="event.stopPropagation();toggleMono('+c.id+')">'+(c.mono?'💬':'👤')+'</button>'
       +'</div>':'')
     +(c.text?'<div class="card-compact-text">'+c.text.replace(/</g,'&lt;')+'</div>':'')
     +(c.sketch?'<img class="card-compact-sketch" src="'+c.sketch+'" onclick="event.stopPropagation();openSketch('+c.id+')" alt="">':'')
